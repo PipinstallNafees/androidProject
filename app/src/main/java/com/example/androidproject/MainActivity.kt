@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.androidproject.navigation.AppNavigation
 import com.example.androidproject.ui.theme.AndroidProjectTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +26,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AndroidProjectTheme {
-                Adminpage()
+                val navController = rememberNavController()
+                AppNavigation(navController)
             }
         }
     }
