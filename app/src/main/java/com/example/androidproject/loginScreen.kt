@@ -24,10 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun Adminpage() {
+fun Adminpage(navController: NavController) {
 
 
     Column(
@@ -52,7 +54,7 @@ fun Adminpage() {
                 .background(Color.White, RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
-            contentAlignment = androidx.compose.ui.Alignment.Center
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
@@ -113,5 +115,5 @@ fun Adminpage() {
 @Preview(showBackground = true)
 @Composable
 fun AdminpagePreview() {
-    Adminpage()
+    Adminpage(navController = rememberNavController())
 }
