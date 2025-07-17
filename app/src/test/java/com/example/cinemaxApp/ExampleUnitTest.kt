@@ -1,4 +1,4 @@
-package com.example.androidproject
+package com.example.cinemaxApp
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.androidproject.data
+package com.example.cinemaxApp.data
 
 
 data class Movie(
