@@ -1,3 +1,5 @@
+package com.example.cinemaxApp.feature.admin.auth.view
+
 // 🔽 Compose & AndroidX Imports
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

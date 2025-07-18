@@ -1,4 +1,4 @@
-package com.example.cinemaxApp.screens
+package com.example.cinemaxApp.core.splashScreen
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing

@@ -1,4 +1,4 @@
-package com.example.cinemaxApp.screens
+package com.example.cinemaxApp.feature.user.auth.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

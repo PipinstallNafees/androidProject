@@ -1,4 +1,4 @@
-package com.example.cinemaxApp.screens
+package com.example.cinemaxApp.feature.user.movieBooking.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.cinemaxApp.data.Movie
+import com.example.cinemaxApp.feature.admin.addMovie.model.Movie
 
 @Composable
 fun BookingScreen() {

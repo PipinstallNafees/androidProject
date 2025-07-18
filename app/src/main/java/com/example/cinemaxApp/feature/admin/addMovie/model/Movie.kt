@@ -1,4 +1,4 @@
-package com.example.cinemaxApp.data
+package com.example.cinemaxApp.feature.admin.addMovie.model
 
 
 data class Movie(
