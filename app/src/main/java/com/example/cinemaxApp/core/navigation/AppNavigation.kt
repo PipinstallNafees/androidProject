@@ -9,6 +9,7 @@ import com.example.cinemaxApp.feature.user.movieBooking.view.BookingScreen
 import com.example.cinemaxApp.core.splashScreen.LandingPage
 import com.example.cinemaxApp.feature.user.auth.view.choiceSceen
 import com.example.cinemaxApp.feature.admin.auth.view.Adminpage
+import com.example.cinemaxApp.feature.user.userDashboard.DashboardScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -21,6 +22,9 @@ fun AppNavigation(navController: NavHostController) {
         }
         composable("admin") {
             Adminpage(navController)
+        }
+        composable("dashboard"){
+            DashboardScreen(navController)
         }
 
     }

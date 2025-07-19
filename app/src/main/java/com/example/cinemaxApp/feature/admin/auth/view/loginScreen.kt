@@ -28,8 +28,8 @@ fun Adminpage(navController: NavController) {
     val mahroon = Color(0xFF710C0C)
     val white = Color.White
 
-    val adminId = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    val adminId = remember { mutableStateOf("admin") }
+    val password = remember { mutableStateOf("cinemax") }
 
     Column(
         modifier = Modifier
@@ -126,7 +126,15 @@ fun Adminpage(navController: NavController) {
                 )
 
                 Button(
-                    onClick = { /* TODO: Handle Login */ },
+                    onClick = {
+                        // Handle login logic here
+                        if (adminId.value.isNotEmpty() && password.value.isNotEmpty()) {
+                            // Navigate to admin dashboard or perform login action
+                            navController.navigate("dashboard")
+                        } else {
+                            // Show error message or handle empty fields
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp)
