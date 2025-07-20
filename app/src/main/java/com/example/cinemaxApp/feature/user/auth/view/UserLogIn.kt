@@ -1,4 +1,5 @@
-package com.example.cinemaxApp.feature.admin.auth.view
+package com.example.cinemaxApp.feature.user.auth.view
+
 
 // 🔽 Compose & AndroidX Imports
 import android.widget.Toast
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -26,26 +28,32 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 
 @Composable
-fun Adminpage(navController: NavController) {
+fun UserPage(navController: NavController) {
     val carbonBlack = Color(0xFF1A1919)
     val mahroon = Color(0xFF710C0C)
     val white = Color.White
     val context = LocalContext.current
-    val adminId = remember { mutableStateOf("") }
+    val userId = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(carbonBlack)
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(
+            Brush.verticalGradient(
+                colors = listOf(Color(0xFF000000), Color(0xFF8D2D2D))
+            )
+            ),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "🎬 Welcome to Cinemax Admin Panel",
+            text = "🎬 Welcome to Cinemax User",
             style = MaterialTheme.typography.headlineMedium.copy(
                 color = mahroon,
                 fontFamily = FontFamily.Monospace,
@@ -59,7 +67,7 @@ fun Adminpage(navController: NavController) {
         Box(
             modifier = Modifier
                 .padding(12.dp)
-                .shadow(6.dp, RoundedCornerShape(12.dp))
+                .shadow(10.dp, RoundedCornerShape(12.dp))
                 .background(white, RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
@@ -72,7 +80,7 @@ fun Adminpage(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "👋 Hello Admin",
+                    text = "👋 Hello User",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
@@ -86,7 +94,7 @@ fun Adminpage(navController: NavController) {
                 Divider(thickness = 1.dp, color = mahroon)
 
                 Text(
-                    text = "Enter your Admin ID",
+                    text = "Enter your Email ID",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.SemiBold,
@@ -95,10 +103,10 @@ fun Adminpage(navController: NavController) {
                 )
 
                 OutlinedTextField(
-                    value = adminId.value,
-                    onValueChange = { adminId.value = it },
+                    value = userId.value,
+                    onValueChange = { userId.value = it },
                     label = {
-                        Text("Admin ID", fontFamily = FontFamily.Monospace)
+                        Text("email ID", fontFamily = FontFamily.Monospace)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
@@ -116,25 +124,23 @@ fun Adminpage(navController: NavController) {
                         color = carbonBlack
                     )
                 )
-
                 OutlinedTextField(
-                    value =password.value,
+                    value = password.value,
                     onValueChange = { password.value = it },
-                    label = {
-                        Text("Password", fontFamily = FontFamily.Monospace)
-                    },
+                    label = { Text("Password", fontFamily = FontFamily.Monospace) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = mahroon,
                         unfocusedBorderColor = Color.Gray
-                    )
+                    ),
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 Button(
                     onClick = {
                         // Handle login logic here
-                        if (adminId.value=="cinemax" && password.value=="cinemax") {
+                        if (userId.value=="cinemax" && password.value=="cinemax") {
                             // Navigate to admin dashboard or perform login action
                             navController.navigate("dashboard")
                         } else {
@@ -157,13 +163,64 @@ fun Adminpage(navController: NavController) {
                         )
                     )
                 }
+                TextButton(
+                    onClick = {
+                        // Handle forgot password logic here
+                        Toast.makeText(context, "Forgot Password Clicked", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(
+                            color = mahroon,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+                TextButton(
+                    onClick = {
+                        // Handle user registration logic here
+                        Toast.makeText(context, "Register Clicked", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "New Register ?",
+                        style = TextStyle(
+                            color = mahroon,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
         }
     }
 }
 
+
+@Composable
+fun NewUserPage(navController: NavController) {
+    // This function can be used for user registration or other functionalities
+    // For now, it can just show a simple message
+    Text(
+        text = "New User Registration Page",
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier.padding(16.dp)
+    )
+}
+
+
+
 @Preview(showBackground = true)
 @Composable
-fun AdminpagePreview() {
-    Adminpage(navController = rememberNavController())
+fun NewUserPreview() {
+    NewUserPage(navController = rememberNavController())
+}
+@Preview(showBackground = true)
+@Composable
+fun UserPagePreview() {
+    UserPage(navController = rememberNavController())
 }

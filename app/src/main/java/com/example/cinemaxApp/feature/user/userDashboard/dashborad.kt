@@ -126,17 +126,17 @@ fun DashboardScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            DashboardCard("Booking", R.drawable.booking, Modifier.weight(1f))
-                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f))
-                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f))
+                            DashboardCard("Booking", R.drawable.booking, Modifier.weight(1f),navController)
+                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),navController)
+                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f),navController)
                         }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f))
-                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f))
-                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f))
+                            DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),navController)
+                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),navController)
+                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),navController)
                         }
                     }
                 }
@@ -146,9 +146,11 @@ fun DashboardScreen(navController: NavController) {
 }
 
 @Composable
-fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier) {
+fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier,navController: NavController) {
     Card(
-        onClick = { /* Handle card click */ },
+        onClick = {
+            navController.navigate(title)
+                  },
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier.aspectRatio(1f)
