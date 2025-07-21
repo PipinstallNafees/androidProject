@@ -136,7 +136,7 @@ fun Adminpage(navController: NavController) {
                         // Handle login logic here
                         if (adminId.value=="cinemax" && password.value=="cinemax") {
                             // Navigate to admin dashboard or perform login action
-                            navController.navigate("dashboard")
+                            navController.navigate("adminDashboard")
                         } else {
                             Toast.makeText(context, "Invalid Admin ID or Password", Toast.LENGTH_SHORT).show()
                         }

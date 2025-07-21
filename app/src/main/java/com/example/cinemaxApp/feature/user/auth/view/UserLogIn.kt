@@ -43,8 +43,6 @@ fun UserPage(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(carbonBlack)
-            .padding(16.dp)
             .background(
             Brush.verticalGradient(
                 colors = listOf(Color(0xFF000000), Color(0xFF8D2D2D))
@@ -165,8 +163,8 @@ fun UserPage(navController: NavController) {
                 }
                 TextButton(
                     onClick = {
-                        // Handle forgot password logic here
-                        Toast.makeText(context, "Forgot Password Clicked", Toast.LENGTH_SHORT).show()
+                        // Navigate to Forgot Password screen
+                        navController.navigate("forgotPassword")
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -182,8 +180,7 @@ fun UserPage(navController: NavController) {
                 TextButton(
                     onClick = {
                         // Handle user registration logic here
-                        Toast.makeText(context, "Register Clicked", Toast.LENGTH_SHORT).show()
-                    },
+                        navController.navigate("Register")},
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
@@ -200,27 +197,165 @@ fun UserPage(navController: NavController) {
     }
 }
 
-
 @Composable
-fun NewUserPage(navController: NavController) {
-    // This function can be used for user registration or other functionalities
-    // For now, it can just show a simple message
-    Text(
-        text = "New User Registration Page",
-        style = MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(16.dp)
-    )
+fun RegistrationScreen(navController: NavController) {
+    val context = LocalContext.current
+    val username = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFF710C0C), Color(0xFF1A1919))
+                )
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "📝 New User Registration",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                color = Color.White,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = username.value,
+            onValueChange = { username.value = it },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = email.value,
+            onValueChange = { email.value = it },
+            label = { Text("Email ID") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = password.value,
+            onValueChange = { password.value = it },
+            label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        Button(
+            onClick = {
+                Toast.makeText(context, "Account created for ${username.value}", Toast.LENGTH_SHORT).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF710C0C))
+        ) {
+            Text("Register", color = Color.White)
+        }
+
+        TextButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("← Back to Login", color = Color.LightGray)
+        }
+    }
 }
 
+@Composable
+fun ForgotPasswordScreen(navController: NavController) {
+    val context = LocalContext.current
+    val email = remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFF000000), Color(0xFF710C0C))
+                )
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "🔐 Forgot Password",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                color = Color.White,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = email.value,
+            onValueChange = { email.value = it },
+            label = { Text("Enter registered Email ID") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        Button(
+            onClick = {
+                Toast.makeText(context, "Recovery link sent to ${email.value}", Toast.LENGTH_SHORT).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF710C0C))
+        ) {
+            Text("Send Recovery Link", color = Color.White)
+        }
+
+        TextButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("← Back to Login", color = Color.LightGray)
+        }
+    }
+}
 
 
 @Preview(showBackground = true)
 @Composable
 fun NewUserPreview() {
-    NewUserPage(navController = rememberNavController())
+    RegistrationScreen(navController = rememberNavController())
 }
 @Preview(showBackground = true)
 @Composable
 fun UserPagePreview() {
     UserPage(navController = rememberNavController())
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ForgetpasswordPreview() {
+    ForgotPasswordScreen(navController = rememberNavController())
 }
