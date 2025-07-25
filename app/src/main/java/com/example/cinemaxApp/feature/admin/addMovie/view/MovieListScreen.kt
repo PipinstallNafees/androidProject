@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,11 +20,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.cinemaxApp.feature.admin.addMovie.ViewModel.AdminViewModel
+import androidx.navigation.NavHostController
+import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
 
 @Composable
-fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
+fun MovieListScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
+    LaunchedEffect(Unit) {
+        viewModel.getMovieList()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +52,7 @@ fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
         )
 
         Button(
-            onClick = { nav.navigate("createMovie") },
+            onClick = { nav.navigate(Screen.CreateMovie.route) },
             modifier = Modifier.align(Alignment.End),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF710C0C))
         ) {
@@ -58,7 +64,7 @@ fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
         Spacer(Modifier.height(24.dp))
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(vm.movieList) { movie ->
+            items(viewModel.movieList) { movie ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
@@ -77,7 +83,7 @@ fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
                         Spacer(Modifier.height(4.dp))
 
                         Text(
-                            "🎟 Seats: ${movie.totalSeats} | Allocated: ${movie.allocatedSeats.size}",
+                            "🎟 Seats: ${movie.totalSeats} | Allocated: ${movie.bookedSeats}",
                             style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                         )
 
@@ -88,7 +94,7 @@ fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Button(
-                                onClick = { nav.navigate("editMovie/${movie.id}") },
+                                onClick = { nav.navigate(Screen.EditMovie.createRoute(movie.id)) },
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
                             ) {
@@ -98,7 +104,7 @@ fun MovieListScreen(nav: NavController, vm: AdminViewModel) {
                             }
 
                             Button(
-                                onClick = { nav.navigate("allocateSeat/${movie.id}") },
+                                onClick = { nav.navigate(Screen.AllocateSeat.createRoute(movie.id)) },
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6A1B9A))
                             ) {

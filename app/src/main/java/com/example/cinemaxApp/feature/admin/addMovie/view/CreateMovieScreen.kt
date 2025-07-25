@@ -1,6 +1,7 @@
 package com.example.cinemaxApp.feature.admin.addMovie.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,16 +17,27 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.cinemaxApp.feature.admin.addMovie.ViewModel.AdminViewModel
+import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
+import java.time.LocalDate
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 @Composable
-fun CreateMovieScreen(nav: NavController, vm: AdminViewModel) {
+fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var seats by remember { mutableStateOf("") }
     var posterUrl by remember { mutableStateOf("") }
     val isFormValid = title.isNotBlank() && seats.toIntOrNull() != null
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+//    val coroutineScope = rememberCoroutineScope()
+
 
     Column(
         modifier = Modifier
@@ -92,11 +104,75 @@ fun CreateMovieScreen(nav: NavController, vm: AdminViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                val context = LocalContext.current
+
+                val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+                val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+
+                val calendar = Calendar.getInstance()
+
+                // Date Picker Dialog
+                val datePickerDialog = remember {
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, dayOfMonth ->
+                            val pickedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                            selectedDate = pickedDate.toString()
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    )
+                }
+
+                // Time Picker Dialog
+                val timePickerDialog = remember {
+                    TimePickerDialog(
+                        context,
+                        { _, hour: Int, minute: Int ->
+                            val pickedTime = LocalTime.of(hour, minute)
+                            selectedTime = pickedTime.toString()
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        false // use 12-hour format with AM/PM
+                    )
+                }
+
+
+                    OutlinedTextField(
+                        value = selectedDate?.format(dateFormatter) ?: "",
+                        onValueChange = {},
+                        label = { Text("Date") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .clickable { datePickerDialog.show() },
+                        enabled = false,
+                        readOnly = true
+                    )
+
+                    OutlinedTextField(
+                        value = selectedTime?.format(timeFormatter) ?: "",
+                        onValueChange = {},
+                        label = { Text("Time") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .clickable { timePickerDialog.show() },
+                        enabled = false,
+                        readOnly = true
+                    )
+
+
+
+
                 Button(
                     onClick = {
                         if (isFormValid) {
-                            vm.addMovie(title, desc, seats.toInt(), posterUrl)
-                            nav.navigate("Adminbooking")
+//                            coroutineScope.launch {}
+                            viewModel.addMovie(title, desc, seats.toInt(), posterUrl, selectedDate, selectedTime)
+                            nav.popBackStack()
                         }
                     },
                     modifier = Modifier

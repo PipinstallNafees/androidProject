@@ -6,18 +6,15 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.cinemaxApp.feature.admin.addMovie.ViewModel.AdminViewModel
+import androidx.navigation.NavHostController
+import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
 
 @Composable
-fun AllocateSeatScreen(nav: NavController, vm: AdminViewModel, id: Int) {
-    val movie = vm.getMovieById(id) ?: return
+fun AllocateSeatScreen(nav: NavHostController, viewModel: MovieAdminViewModel, id: String) {
+    val movie = viewModel.getMovieById(id) ?: return
     var seatNo by remember { mutableStateOf("") }
 
     Column(
@@ -32,8 +29,9 @@ fun AllocateSeatScreen(nav: NavController, vm: AdminViewModel, id: Int) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
+        // ${movie.allocatedSeats.sorted().joinToString()}
         Text(
-            text = "Allocated Seats: ${movie.allocatedSeats.sorted().joinToString()}",
+            text = "Allocated Seats: ${movie.bookedSeats}",
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
@@ -54,7 +52,7 @@ fun AllocateSeatScreen(nav: NavController, vm: AdminViewModel, id: Int) {
                 onClick = {
                     val seat = seatNo.toIntOrNull()
                     if (seat != null) {
-                        vm.allocateSeat(id, seat)
+                        viewModel.allocateSeat(id, seat)
                         seatNo = ""
                     }
                 },
