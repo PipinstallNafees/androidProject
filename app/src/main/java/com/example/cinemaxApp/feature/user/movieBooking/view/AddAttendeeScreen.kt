@@ -1,38 +1,41 @@
-package com.example.cinemaxApp.feature.user.auth.view.View
+package com.example.cinemaxApp.feature.user.movieBooking.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.cinemaxApp.feature.user.auth.view.ViewModel.UserBookingViewModel
+import androidx.navigation.NavHostController
+import com.example.cinemaxApp.core.model.Attendee
+import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.user.movieBooking.viewmodel.UserBookingViewModel
 
 @Composable
-fun AddAttendeeScreen(nav: NavController, viewModel: UserBookingViewModel) {
-    val movie = viewModel.selectedMovie ?: return
+fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
+    val movie = viewModel.movie ?: return
 
-    val currentCount = viewModel.attendeeList.count { it.movieId == movie.id }
-
-    if (currentCount >= 2) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("⚠️ Booking Limit Reached!", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
-            Spacer(Modifier.height(12.dp))
-            Text("Only 2 persons are allowed to book per movie.", style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(24.dp))
-            Button(onClick = { nav.popBackStack("movieDetail", inclusive = false) }) {
-                Text("Back to Movie Details")
-            }
-        }
-        return
-    }
+    // TODO: Review These codes
+//    val currentCount = viewModel.attendeeList.count { it.movieId == movie.id }
+//    if (currentCount >= 2) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(24.dp),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Text("⚠️ Booking Limit Reached!", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
+//            Spacer(Modifier.height(12.dp))
+//            Text("Only 2 persons are allowed to book per movie.", style = MaterialTheme.typography.bodyMedium)
+//            Spacer(Modifier.height(24.dp))
+//            Button(onClick = { nav.popBackStack("movieDetail", inclusive = false) }) {
+//                Text("Back to Movie Details")
+//            }
+//        }
+//        return
+//    }
 
     // Attendee 1
     var name1 by remember { mutableStateOf("") }
@@ -40,7 +43,7 @@ fun AddAttendeeScreen(nav: NavController, viewModel: UserBookingViewModel) {
     var sic1 by remember { mutableStateOf("") }
 
     // Ask for 2nd attendee
-    var addSecondPerson by remember { mutableStateOf<Boolean?>(null) }
+    var addSecondPerson by remember { mutableStateOf(false) }
 
     // Attendee 2
     var name2 by remember { mutableStateOf("") }
@@ -67,19 +70,22 @@ fun AddAttendeeScreen(nav: NavController, viewModel: UserBookingViewModel) {
         Spacer(Modifier.height(24.dp))
 
         // Ask for Attendee 2
-        if (addSecondPerson == null) {
+
             Text("➕ Add second attendee?")
             Spacer(Modifier.height(8.dp))
             Row {
-                Button(onClick = { addSecondPerson = true }) {
-                    Text("Yes")
-                }
-                Spacer(Modifier.width(12.dp))
-                OutlinedButton(onClick = { addSecondPerson = false }) {
-                    Text("No")
-                }
+//                Button(onClick = { addSecondPerson = true }) {
+//                    Text("Yes")
+//                }
+//                Spacer(Modifier.width(12.dp))
+//                OutlinedButton(onClick = { addSecondPerson = false }) {
+//                    Text("No")
+//                }
+                Switch(
+                    checked = addSecondPerson,
+                    onCheckedChange = { addSecondPerson = it }
+                )
             }
-        }
 
         // Attendee 2
         if (addSecondPerson == true) {
@@ -98,12 +104,26 @@ fun AddAttendeeScreen(nav: NavController, viewModel: UserBookingViewModel) {
         Button(
             onClick = {
                 // Add first attendee
-                viewModel.bookAttendee(name1, branch1, sic1)
+                var attendeeList: MutableList<Attendee> = mutableListOf()
+                attendeeList.add(Attendee(name1, branch1, sic1))
                 // Add second attendee if chosen and filled
+                Log.d("InView", "@78hfy-jk")
                 if (addSecondPerson == true && name2.isNotBlank() && branch2.isNotBlank() && sic2.isNotBlank()) {
-                    viewModel.bookAttendee(name2, branch2, sic2)
+                    Log.d("InsideIf", "op-yun7g")
+                    attendeeList.add(Attendee(name2, branch2, sic2))
                 }
-                nav.popBackStack("movieDetail", inclusive = false)
+                viewModel.bookAttendee(attendeeList)
+
+                nav.navigate(Screen.UserDashboard.route) {
+                    popUpTo(Screen.UserDashboard.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+                // TODO: Review the below code
+//                val previousEntry = nav.previousBackStackEntry
+//                Log.d("BackStack", "Previous Destination: ${previousEntry?.destination?.route}")
+
             },
             enabled = name1.isNotBlank() && branch1.isNotBlank() && sic1.isNotBlank(),
             modifier = Modifier.align(Alignment.End)
