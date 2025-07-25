@@ -1,15 +1,19 @@
 
-package com.example.cinemaxApp.feature.user.userDashboard
+package com.example.cinemaxApp.feature.user.dashboard.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +25,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.androidproject.R
+import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
 
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewModel) {
+    var userName by remember { mutableStateOf("") }
+
+    userName = viewModel.userName
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserName()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,10 +52,11 @@ fun DashboardScreen(navController: NavController) {
                 )
             )
     ) {
-        // Header Image
+        //  Header Image
         Spacer(modifier = Modifier.padding(35.dp) )
         Image(
-            painter = painterResource(id = R.drawable.logo),
+//            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = R.drawable.cinemax_logo_final),
             contentDescription = "Cinemax Logo",
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,7 +82,7 @@ fun DashboardScreen(navController: NavController) {
                     color = Color.White
                 )
                 IconButton(
-                    onClick = { /* Handle logout */ }
+                    onClick = { nav.navigate(Screen.UserProfile.route) }
                 ) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
@@ -87,7 +104,7 @@ fun DashboardScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Username",
+                text = userName,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -126,17 +143,17 @@ fun DashboardScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            DashboardCard("Booking", R.drawable.booking, Modifier.weight(1f),navController)
-                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),navController)
-                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f),navController)
+                            DashboardCard("Booking", R.drawable.booking, Modifier.weight(1f),nav, Screen.BookMovie.route)
+                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),nav)
+                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f),nav)
                         }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),navController)
-                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),navController)
-                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),navController)
+                            DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),nav, Screen.SocialHandle.route)
+                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),nav)
+                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav)
                         }
                     }
                 }
@@ -146,10 +163,10 @@ fun DashboardScreen(navController: NavController) {
 }
 
 @Composable
-fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier,navController: NavController) {
+fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier,nav: NavHostController, screen: String = Screen.UserProfile.route) {
     Card(
         onClick = {
-            navController.navigate(title)
+            nav.navigate(screen)
                   },
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(16.dp),
@@ -182,5 +199,5 @@ fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier,nav
 @Preview(showBackground = true)
 @Composable
 fun DashboardScreenPreview() {
-    DashboardScreen(navController = rememberNavController())
+    UserDashboardScreen(nav = rememberNavController(), viewModel = viewModel())
 }
