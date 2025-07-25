@@ -5,38 +5,40 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.admin.auth.viewmodel.AdminLoginViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun Adminpage(navController: NavController) {
+fun AdminLoginScreen(nav: NavHostController, viewModel: AdminLoginViewModel) {
     val carbonBlack = Color(0xFF1A1919)
     val mahroon = Color(0xFF710C0C)
     val white = Color.White
     val context = LocalContext.current
     val adminId = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    var coroutineScope = rememberCoroutineScope()
 
+    // TODO: Try to remove the Emojis, Degrades the premium look & feel
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -133,12 +135,31 @@ fun Adminpage(navController: NavController) {
 
                 Button(
                     onClick = {
+                        // TODO: Add Validation Logics [Silicon Email validation, Email Validation]
+                        // TODO: Review the below commented code [Hardcoded Login Logic] & remove if not needed in future implementation
                         // Handle login logic here
-                        if (adminId.value=="cinemax" && password.value=="cinemax") {
-                            // Navigate to admin dashboard or perform login action
-                            navController.navigate("adminDashboard")
-                        } else {
-                            Toast.makeText(context, "Invalid Admin ID or Password", Toast.LENGTH_SHORT).show()
+//                        if (adminId.value=="cinemax" && password.value=="cinemax") {
+//                            // Navigate to admin dashboard or perform login action
+//                            nav.navigate("adminDashboard")
+//                        } else {
+//                            Toast.makeText(context, "Invalid Admin ID or Password", Toast.LENGTH_SHORT).show()
+//                        }
+
+                        coroutineScope.launch {
+                            var result = viewModel.login(adminId.value, password.value)
+                            if (result.isSuccess) {
+                                // Navigate to Admin Dashboard & empty the nav stack
+                                nav.navigate(Screen.AdminDashboard.route) {
+                                    popUpTo(Screen.UserTypeSelection.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                val error = result.exceptionOrNull()?.message ?: "Login failed, Invalid Admin ID or Password"
+                                // TODO: Change the view of toast (looks small on screen & may get unnoticed)
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier
@@ -165,5 +186,5 @@ fun Adminpage(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun AdminpagePreview() {
-    Adminpage(navController = rememberNavController())
+    AdminLoginScreen(nav = rememberNavController(), viewModel = viewModel())
 }
