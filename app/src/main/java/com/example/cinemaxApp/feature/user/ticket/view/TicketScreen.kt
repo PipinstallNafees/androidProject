@@ -58,6 +58,7 @@ fun TicketQRCodeScreen() {
         }.toString()
     }
 
+
     val qrBitmap = remember { generateQRCode(ticketJson, 500) }
 
 //    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
