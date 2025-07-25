@@ -1,6 +1,5 @@
-package com.example.cinemaxApp.feature.user.social
+package com.example.cinemaxApp.feature.user.social.view
 
-import android.R.attr.id
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,13 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.androidproject.R
 
 
 @Composable
-fun Instagram(navController: NavController) {
+fun Instagram(nav: NavHostController) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -46,7 +43,7 @@ fun Instagram(navController: NavController) {
         Spacer(modifier = Modifier.padding(16.dp)) // Optional spacer for top padding
         IconButton(
             onClick = {
-                navController.popBackStack()// Navigate back to the previous screen
+                nav.popBackStack()// Navigate back to the previous screen
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -103,5 +100,12 @@ fun Instagram(navController: NavController) {
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun InstagramPreview(){
+    Instagram(rememberNavController())
 }
 

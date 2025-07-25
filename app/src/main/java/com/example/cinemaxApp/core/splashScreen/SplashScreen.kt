@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,7 +33,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LandingPage(navController: NavController) {
+fun SplashScreen() {
     val scale = remember { Animatable(0f) }
     val alpha = remember { Animatable(0f) }
 
@@ -57,10 +56,11 @@ fun LandingPage(navController: NavController) {
                 )
             )
         }
-        delay(1200) // Ensures animation finishes before navigating
-        navController.navigate("choice") {
-            popUpTo("landing") { inclusive = true }
-        }
+        delay(2000)
+//        delay(1200) // Ensures animation finishes before navigating
+//        navController.navigate("choice") {
+//            popUpTo("landing") { inclusive = true }
+//        }
     }
 
     Box(
@@ -75,22 +75,24 @@ fun LandingPage(navController: NavController) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+//                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.cinemax_logo_final),
                 contentDescription = "Cinemax Club Logo",
                 modifier = Modifier
                     .scale(scale.value)
                     .alpha(alpha.value)
+                    .height(150.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Cinemax",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif
-                )
-            )
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Text(
+//                text = "Cinemax",
+//                style = TextStyle(
+//                    color = Color.White,
+//                    fontSize = 24.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    fontFamily = FontFamily.Serif
+//                )
+//            )
         }
 
     }
