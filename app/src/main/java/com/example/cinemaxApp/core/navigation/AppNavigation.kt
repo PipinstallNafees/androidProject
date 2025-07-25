@@ -1,64 +1,149 @@
 package com.example.cinemaxApp.core.navigation
 
 
-import BookMovieScreen
+import com.example.cinemaxApp.feature.user.movieBooking.view.BookMovieScreen
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.cinemaxApp.core.splashScreen.LandingPage
-import com.example.cinemaxApp.feature.admin.AdminDashboard.AdminDashboardScreen
-import com.example.cinemaxApp.feature.admin.addMovie.ViewModel.AdminViewModel
+import androidx.navigation.navArgument
+import com.example.cinemaxApp.core.firebase.AuthService
+import com.example.cinemaxApp.core.firebase.FirestoreService
+import com.example.cinemaxApp.feature.admin.dashboard.view.AdminDashboardScreen
+import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
+import com.example.cinemaxApp.feature.admin.addMovie.view.AllocateSeatScreen
 import com.example.cinemaxApp.feature.admin.addMovie.view.CreateMovieScreen
+import com.example.cinemaxApp.feature.admin.addMovie.view.EditMovieScreen
 import com.example.cinemaxApp.feature.admin.addMovie.view.MovieListScreen
-import com.example.cinemaxApp.feature.user.auth.view.choiceSceen
-import com.example.cinemaxApp.feature.admin.auth.view.Adminpage
-import com.example.cinemaxApp.feature.user.auth.view.UserPage
-import com.example.cinemaxApp.feature.user.auth.view.View.AddAttendeeScreen
-import com.example.cinemaxApp.feature.user.auth.view.ViewModel.UserBookingViewModel
-import com.example.cinemaxApp.feature.user.social.Instagram
-import com.example.cinemaxApp.feature.user.userDashboard.DashboardScreen
+import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModelFactory
+import com.example.cinemaxApp.feature.user.auth.view.UserTypeSelectionScreen
+import com.example.cinemaxApp.feature.admin.auth.view.AdminLoginScreen
+import com.example.cinemaxApp.feature.admin.auth.viewmodel.AdminLoginViewModel
+import com.example.cinemaxApp.feature.admin.auth.viewmodel.AdminLoginViewModelFactory
+import com.example.cinemaxApp.feature.admin.dashboard.viewmodel.AdminDashboardViewModel
+import com.example.cinemaxApp.feature.admin.dashboard.viewmodel.AdminDashboardViewModelFactory
+import com.example.cinemaxApp.feature.admin.profile.view.AdminProfileScreen
+import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModel
+import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModelFactory
+import com.example.cinemaxApp.feature.admin.verifyTicket.view.VerifyTicketScreen
+import com.example.cinemaxApp.feature.user.auth.view.UserSignupScreen
+import com.example.cinemaxApp.feature.user.auth.view.UserLoginScreen
+import com.example.cinemaxApp.feature.user.movieBooking.view.AddAttendeeScreen
+import com.example.cinemaxApp.feature.user.movieBooking.viewmodel.UserBookingViewModel
+import com.example.cinemaxApp.feature.user.movieBooking.viewmodel.UserBookingViewModelFactory
+import com.example.cinemaxApp.feature.user.auth.viewmodel.UserLoginViewModel
+import com.example.cinemaxApp.feature.user.auth.viewmodel.UserLoginViewModelFactory
+import com.example.cinemaxApp.feature.user.auth.viewmodel.UserSignupViewModel
+import com.example.cinemaxApp.feature.user.auth.viewmodel.UserSignupViewModelFactory
+import com.example.cinemaxApp.feature.user.profile.view.UserProfileScreen
+import com.example.cinemaxApp.feature.user.profile.viewmodel.UserProfileViewModel
+import com.example.cinemaxApp.feature.user.profile.viewmodel.UserProfileViewModelFactory
+import com.example.cinemaxApp.feature.user.social.view.Instagram
+import com.example.cinemaxApp.feature.user.dashboard.view.UserDashboardScreen
+import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
+import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModelFactory
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
-    NavHost(navController, startDestination = "splash") {
-        composable("splash") {
-            LandingPage(navController)
+fun AppNavigation(navHostController: NavHostController, startScreen: String, authService: AuthService, firestoreService: FirestoreService) {
+    // ViewModel object creation -- Needed for passing in composable views
+    val adminDashboardViewModel: AdminDashboardViewModel = viewModel(
+        factory = AdminDashboardViewModelFactory(authService, firestoreService)
+    )
+    val movieAdminViewModel: MovieAdminViewModel = viewModel(
+        factory = MovieAdminViewModelFactory(firestoreService)
+    )
+    val adminLoginViewModel: AdminLoginViewModel = viewModel(
+        factory = AdminLoginViewModelFactory(authService, firestoreService)
+    )
+    val adminProfileViewModel: AdminProfileViewModel = viewModel(
+        factory = AdminProfileViewModelFactory(authService, firestoreService)
+    )
+    val userDashboardViewModel: UserDashboardViewModel = viewModel(
+        factory = UserDashboardViewModelFactory(authService, firestoreService)
+    )
+    val userBookingViewModel: UserBookingViewModel = viewModel(
+        factory = UserBookingViewModelFactory(authService, firestoreService)
+    )
+    val userLoginViewModel: UserLoginViewModel = viewModel(
+        factory = UserLoginViewModelFactory(authService, firestoreService)
+    )
+    val userSignupViewModel: UserSignupViewModel = viewModel(
+        factory = UserSignupViewModelFactory(authService, firestoreService)
+    )
+    val userProfileViewModel: UserProfileViewModel = viewModel(
+        factory = UserProfileViewModelFactory(authService, firestoreService)
+    )
+
+    // Nav Graph
+    // For passing screen name (String) in composable() use Screen Class
+    // All the Screen names are defined in ./Screen.kt
+    NavHost(navHostController, startDestination = startScreen) {
+        // Splash Screen -- Currently handled in MainActivity.kt
+//        composable(Screen.Splash.route) {
+//            SplashScreen()
+//        }
+        composable(Screen.UserTypeSelection.route) {
+            UserTypeSelectionScreen(navHostController)
         }
-        composable("choice") {
-            choiceSceen(navController)
+
+        // Admin
+        composable(Screen.AdminLogin.route) {
+            AdminLoginScreen(navHostController, adminLoginViewModel)
         }
-        composable("admin") {
-            Adminpage(navController)
+        composable(Screen.AdminDashboard.route) {
+            AdminDashboardScreen(navHostController, adminDashboardViewModel)
         }
-        composable("dashboard"){
-            DashboardScreen(navController)
+        composable(Screen.AdminProfile.route) {
+            AdminProfileScreen(navHostController, adminProfileViewModel)
         }
-        composable ("Instagram"){
-            Instagram(navController)
+        composable (Screen.AdminMovieList.route){
+            MovieListScreen(navHostController, movieAdminViewModel)
         }
-        composable("user") {
-            UserPage(navController)
+        composable(Screen.CreateMovie.route) {
+            CreateMovieScreen(navHostController, movieAdminViewModel)
         }
-        composable ("Booking"){
-            val viewModel: UserBookingViewModel = viewModel()
-            BookMovieScreen(navController, viewModel)
+        composable(
+            route = Screen.EditMovie.route,
+            arguments = listOf(navArgument("MovieId") {type = NavType.StringType})
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getString("MovieId")
+            EditMovieScreen(navHostController, movieAdminViewModel, movieId ?: "")
         }
-        composable ("attendeeForm"){
-            val viewModel: UserBookingViewModel = viewModel()
-            AddAttendeeScreen(navController, viewModel)
+        composable(
+            route = Screen.AllocateSeat.route,
+            arguments = listOf(navArgument("MovieId") {type = NavType.StringType})
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getString("MovieId")
+            AllocateSeatScreen(navHostController, movieAdminViewModel, movieId ?: "")
         }
-        composable ("Adminbooking"){
-            val adminViewModel: AdminViewModel = viewModel()
-            MovieListScreen(navController, adminViewModel)
+        composable(Screen.VerifyTicket.route) {
+            VerifyTicketScreen(navHostController)
         }
-        composable("createMovie") {
-            val adminViewModel: AdminViewModel = viewModel()
-            CreateMovieScreen(navController, adminViewModel)
+
+
+        // User
+        composable(Screen.UserSignup.route) {
+            UserSignupScreen(navHostController, userSignupViewModel)
         }
-        composable("adminDashboard") {
-            AdminDashboardScreen(navController)
+        composable(Screen.UserLogin.route) {
+            UserLoginScreen(navHostController, userLoginViewModel)
+        }
+        composable(Screen.UserDashboard.route){
+            UserDashboardScreen(navHostController, userDashboardViewModel)
+        }
+        composable(Screen.UserProfile.route) {
+            UserProfileScreen(navHostController, userProfileViewModel)
+        }
+        composable (Screen.BookMovie.route){
+            BookMovieScreen(navHostController, userBookingViewModel)
+        }
+        composable (Screen.AddAttendee.route){
+            AddAttendeeScreen(navHostController, userBookingViewModel)
+        }
+        composable (Screen.SocialHandle.route){
+            Instagram(navHostController)
         }
     }
 }
