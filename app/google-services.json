@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1014525035718",
-    "project_id": "cinemaxapp-88faf",
-    "storage_bucket": "cinemaxapp-88faf.firebasestorage.app"
+    "project_number": "540749247286",
+    "project_id": "cinemax-d383c",
+    "storage_bucket": "cinemax-d383c.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1014525035718:android:037f226c2b07e4455383c7",
+        "mobilesdk_app_id": "1:540749247286:android:1690fb7b5b3824c2747997",
         "android_client_info": {
           "package_name": "com.example.androidproject"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDCE5nBTYJ6M1urdo9aTJKVhmiQdyV3Yd4"
+          "current_key": "AIzaSyB1xolskLD2aQXC-gA88KFFcWH_FKVaDOE"
         }
       ],
       "services": {

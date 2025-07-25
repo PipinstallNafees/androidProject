@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.androidproject" />
-                  <option name="mobileSdkAppId" value="1:1014525035718:android:037f226c2b07e4455383c7" />
-                  <option name="projectId" value="cinemaxapp-88faf" />
-                  <option name="projectNumber" value="1014525035718" />
+                  <option name="mobileSdkAppId" value="1:540749247286:android:1690fb7b5b3824c2747997" />
+                  <option name="projectId" value="cinemax-d383c" />
+                  <option name="projectNumber" value="540749247286" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
