@@ -2,16 +2,16 @@ package com.example.cinemaxApp.feature.user.auth.view
 
 
 // 🔽 Compose & AndroidX Imports
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,21 +24,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.user.auth.viewmodel.UserLoginViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun UserPage(navController: NavController) {
+fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
     val carbonBlack = Color(0xFF1A1919)
     val mahroon = Color(0xFF710C0C)
     val white = Color.White
     val context = LocalContext.current
     val userId = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    var coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -138,11 +141,29 @@ fun UserPage(navController: NavController) {
                 Button(
                     onClick = {
                         // Handle login logic here
-                        if (userId.value=="cinemax" && password.value=="cinemax") {
-                            // Navigate to admin dashboard or perform login action
-                            navController.navigate("dashboard")
-                        } else {
-                            Toast.makeText(context, "Invalid Admin ID or Password", Toast.LENGTH_SHORT).show()
+//                        if (userId.value=="cinemax" && password.value=="cinemax") {
+//                            // Navigate to admin dashboard or perform login action
+//                            nav.navigate("dashboard")
+//                        } else {
+//                            Toast.makeText(context, "Invalid Admin ID or Password", Toast.LENGTH_SHORT).show()
+//                        }
+
+                        coroutineScope.launch {
+                            var result = viewModel.login(userId.value, password.value)
+                            if (result.isSuccess) {
+                                Log.d("UserLoginView", "Login Successful")
+                                // Navigate to admin dashboard or perform login action
+                                nav.navigate(Screen.UserDashboard.route) {
+                                    popUpTo(Screen.UserTypeSelection.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                Log.d("UserLoginView", "Login Unsuccessful")
+                                val error = result.exceptionOrNull()?.message ?: "Login failed, Invalid User ID or Password"
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier
@@ -164,7 +185,7 @@ fun UserPage(navController: NavController) {
                 TextButton(
                     onClick = {
                         // Navigate to Forgot Password screen
-                        navController.navigate("forgotPassword")
+//                        nav.navigate("forgotPassword")
                     },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -180,7 +201,8 @@ fun UserPage(navController: NavController) {
                 TextButton(
                     onClick = {
                         // Handle user registration logic here
-                        navController.navigate("Register")},
+                        nav.navigate(Screen.UserSignup.route)
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
@@ -197,165 +219,10 @@ fun UserPage(navController: NavController) {
     }
 }
 
-@Composable
-fun RegistrationScreen(navController: NavController) {
-    val context = LocalContext.current
-    val username = remember { mutableStateOf("") }
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF710C0C), Color(0xFF1A1919))
-                )
-            )
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "📝 New User Registration",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                color = Color.White,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = username.value,
-            onValueChange = { username.value = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
-
-        OutlinedTextField(
-            value = email.value,
-            onValueChange = { email.value = it },
-            label = { Text("Email ID") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
-
-        OutlinedTextField(
-            value = password.value,
-            onValueChange = { password.value = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-            shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
-
-        Button(
-            onClick = {
-                Toast.makeText(context, "Account created for ${username.value}", Toast.LENGTH_SHORT).show()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF710C0C))
-        ) {
-            Text("Register", color = Color.White)
-        }
-
-        TextButton(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("← Back to Login", color = Color.LightGray)
-        }
-    }
-}
-
-@Composable
-fun ForgotPasswordScreen(navController: NavController) {
-    val context = LocalContext.current
-    val email = remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF000000), Color(0xFF710C0C))
-                )
-            )
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "🔐 Forgot Password",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                color = Color.White,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = email.value,
-            onValueChange = { email.value = it },
-            label = { Text("Enter registered Email ID") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
-
-        Button(
-            onClick = {
-                Toast.makeText(context, "Recovery link sent to ${email.value}", Toast.LENGTH_SHORT).show()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF710C0C))
-        ) {
-            Text("Send Recovery Link", color = Color.White)
-        }
-
-        TextButton(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("← Back to Login", color = Color.LightGray)
-        }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun NewUserPreview() {
-    RegistrationScreen(navController = rememberNavController())
-}
 @Preview(showBackground = true)
 @Composable
 fun UserPagePreview() {
-    UserPage(navController = rememberNavController())
+    UserLoginScreen(nav = rememberNavController(), viewModel = viewModel())
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ForgetpasswordPreview() {
-    ForgotPasswordScreen(navController = rememberNavController())
-}

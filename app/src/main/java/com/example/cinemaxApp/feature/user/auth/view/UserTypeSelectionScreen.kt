@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,12 +18,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.androidproject.R
+import com.example.cinemaxApp.core.navigation.Screen
 
 @Composable
-fun choiceSceen(navController: NavController) {
+fun UserTypeSelectionScreen(nav: NavHostController) {
     val carbonBlack = Color(0xFF121212)
     val mahroon = Color(0xFF800000)
     val white = Color.White
@@ -50,13 +50,13 @@ fun choiceSceen(navController: NavController) {
         // 🛂 Admin Card
         Card(
             onClick = {
-                navController.navigate("admin")
+                nav.navigate(Screen.AdminLogin.route)
             },
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = white),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { navController.navigate("admin") }
+                .clickable { nav.navigate(Screen.AdminLogin.route) }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -81,13 +81,13 @@ fun choiceSceen(navController: NavController) {
         // 👤 User Card
         Card(
             onClick = {
-                navController.navigate("user")
+                nav.navigate(Screen.UserLogin.route)
             },
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = white),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { navController.navigate("user") }
+                .clickable { nav.navigate(Screen.UserLogin.route) }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -114,5 +114,5 @@ fun choiceSceen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun RoleSelectionPreview() {
-    choiceSceen(navController = rememberNavController())
+    UserTypeSelectionScreen(nav = rememberNavController())
 }
