@@ -28,6 +28,7 @@ import com.example.cinemaxApp.feature.admin.profile.view.AdminProfileScreen
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModel
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModelFactory
 import com.example.cinemaxApp.feature.admin.verifyTicket.view.VerifyTicketScreen
+import com.example.cinemaxApp.feature.user.About.AboutView
 import com.example.cinemaxApp.feature.user.auth.view.UserSignupScreen
 import com.example.cinemaxApp.feature.user.auth.view.UserLoginScreen
 import com.example.cinemaxApp.feature.user.movieBooking.view.AddAttendeeScreen
@@ -76,6 +77,7 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         factory = UserProfileViewModelFactory(authService, firestoreService)
     )
 
+
     // Nav Graph
     // For passing screen name (String) in composable() use Screen Class
     // All the Screen names are defined in ./Screen.kt
@@ -121,6 +123,9 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         composable(Screen.VerifyTicket.route) {
             VerifyTicketScreen(navHostController)
         }
+        composable(Screen.AboutUS.route) {
+            AboutView(navHostController)
+        }
 
 
         // User
@@ -144,6 +149,9 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         }
         composable (Screen.SocialHandle.route){
             Instagram(navHostController)
+        }
+        composable(Screen.Rules.route) {
+            com.example.cinemaxApp.feature.user.Guidelines.RulesView(navHostController)
         }
     }
 }

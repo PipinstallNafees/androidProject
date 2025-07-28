@@ -146,14 +146,15 @@ fun AdminDashboardScreen(nav: NavHostController, viewModel: AdminDashboardViewMo
                         ) {
                             DashboardCard("AdminBooking", R.drawable.booking, Modifier.weight(1f),nav, Screen.AdminMovieList.route)
                             DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),nav, Screen.VerifyTicket.route)
-                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f),nav)
+                            DashboardCard("About Us", R.drawable.user, Modifier.weight(1f),nav,
+                                Screen.AboutUS.route)
                         }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),nav, Screen.SocialHandle.route)
-                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),nav)
+                            DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),nav, Screen.Rules.route)
                             DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav)
                         }
                     }
