@@ -11,7 +11,7 @@ import com.example.cinemaxApp.core.firebase.FirestoreService
 import kotlinx.coroutines.launch
 
 // MovieAdminViewModel.kt
-class MovieAdminViewModel(
+open class MovieAdminViewModel(
     private val firestoreService: FirestoreService
 ) : ViewModel() {
     var movieList by mutableStateOf(listOf<Movie>())
@@ -43,7 +43,7 @@ class MovieAdminViewModel(
     }
 
 
-    fun updateMovie(updated: Movie) {
+    open fun updateMovie(updated: Movie) {
         viewModelScope.launch {
             Log.d("ID", updated.id)
 
@@ -54,7 +54,7 @@ class MovieAdminViewModel(
         }
     }
 
-    fun getMovieById(id: String): Movie? = movieList.find { it.id == id }
+    open fun getMovieById(id: String): Movie? = movieList.find { it.id == id }
 
     fun allocateSeat(movieId: String, seatNo: Int) {
 //        movieList = movieList.map {
