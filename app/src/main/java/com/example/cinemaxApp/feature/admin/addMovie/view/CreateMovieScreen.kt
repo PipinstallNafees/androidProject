@@ -1,5 +1,10 @@
 package com.example.cinemaxApp.feature.admin.addMovie.view
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,32 +17,66 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
 import java.time.LocalDate
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavHostController
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
+import java.util.*
 
 @Composable
 fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var seats by remember { mutableStateOf("") }
-    var posterUrl by remember { mutableStateOf("") }
-    val isFormValid = title.isNotBlank() && seats.toIntOrNull() != null
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
-//    val coroutineScope = rememberCoroutineScope()
+    var posterUri by remember { mutableStateOf<Uri?>(null) }
 
+    val isFormValid = title.isNotBlank() && seats.toIntOrNull() != null
+
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val pickedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                selectedDate = pickedDate.toString()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    val timePickerDialog = remember {
+        TimePickerDialog(
+            context,
+            { _, hour: Int, minute: Int ->
+                val pickedTime = LocalTime.of(hour, minute)
+                selectedTime = pickedTime.toString()
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            false
+        )
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? -> posterUri = uri }
 
     Column(
         modifier = Modifier
@@ -97,81 +136,56 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                OutlinedTextField(
-                    value = posterUrl,
-                    onValueChange = { posterUrl = it },
-                    label = { Text("🖼 Poster URL (Optional)") },
-                    modifier = Modifier.fillMaxWidth()
+                Button(
+                    onClick = { imagePickerLauncher.launch("image/*") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A148C))
+                ) {
+                    Text("📁 Upload Poster", color = Color.White)
+                }
+
+                posterUri?.let {
+                    Text(
+                        text = "✅ Selected Image: ${it.lastPathSegment ?: "Image Selected"}",
+                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF388E3C))
+                    )
+                } ?: Text(
+                    text = "❌ No image selected",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
 
-                val context = LocalContext.current
+                OutlinedTextField(
+                    value = selectedDate,
+                    onValueChange = {},
+                    label = { Text("📅 Date") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { datePickerDialog.show() },
+                    readOnly = true,
+                    enabled = false
+                )
 
-                val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
-                val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
-
-                val calendar = Calendar.getInstance()
-
-                // Date Picker Dialog
-                val datePickerDialog = remember {
-                    DatePickerDialog(
-                        context,
-                        { _, year, month, dayOfMonth ->
-                            val pickedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                            selectedDate = pickedDate.toString()
-                        },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                    )
-                }
-
-                // Time Picker Dialog
-                val timePickerDialog = remember {
-                    TimePickerDialog(
-                        context,
-                        { _, hour: Int, minute: Int ->
-                            val pickedTime = LocalTime.of(hour, minute)
-                            selectedTime = pickedTime.toString()
-                        },
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        false // use 12-hour format with AM/PM
-                    )
-                }
-
-
-                    OutlinedTextField(
-                        value = selectedDate?.format(dateFormatter) ?: "",
-                        onValueChange = {},
-                        label = { Text("Date") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable { datePickerDialog.show() },
-                        enabled = false,
-                        readOnly = true
-                    )
-
-                    OutlinedTextField(
-                        value = selectedTime?.format(timeFormatter) ?: "",
-                        onValueChange = {},
-                        label = { Text("Time") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable { timePickerDialog.show() },
-                        enabled = false,
-                        readOnly = true
-                    )
-
-
-
+                OutlinedTextField(
+                    value = selectedTime,
+                    onValueChange = {},
+                    label = { Text("⏰ Time") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { timePickerDialog.show() },
+                    readOnly = true,
+                    enabled = false
+                )
 
                 Button(
                     onClick = {
                         if (isFormValid) {
-//                            coroutineScope.launch {}
-                            viewModel.addMovie(title, desc, seats.toInt(), posterUrl, selectedDate, selectedTime)
+                            viewModel.addMovie(
+                                title,
+                                desc,
+                                seats.toInt(),
+                                posterUri?.toString() ?: "",
+                                selectedDate,
+                                selectedTime
+                            )
                             nav.popBackStack()
                         }
                     },
