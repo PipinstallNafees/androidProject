@@ -112,14 +112,10 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                     Log.d("InsideIf", "op-yun7g")
                     attendeeList.add(Attendee(name2, branch2, sic2))
                 }
-                viewModel.bookAttendee(attendeeList)
+                viewModel.addAttendee(attendeeList)
 
-                nav.navigate(Screen.UserDashboard.route) {
-                    popUpTo(Screen.UserDashboard.route) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                }
+                nav.navigate(Screen.SeatBooking.route)
+
                 // TODO: Review the below code
 //                val previousEntry = nav.previousBackStackEntry
 //                Log.d("BackStack", "Previous Destination: ${previousEntry?.destination?.route}")

@@ -2,7 +2,9 @@ package com.example.cinemaxApp.core.firebase
 
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import com.example.cinemaxApp.core.model.Movie
+import com.example.cinemaxApp.core.model.Seat
 import com.example.cinemaxApp.core.model.User
 import com.example.cinemaxApp.core.model.Ticket
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,6 +22,7 @@ class FirestoreService {
     private val usersCollection = db.collection("users")
     private val moviesCollection = db.collection("movies")
     private val ticketsCollection = db.collection("tickets")
+    private val seatsCollection = db.collection("seats")
 
 
 
@@ -132,5 +135,43 @@ class FirestoreService {
 
     suspend fun deleteUser(uid: String) {
         usersCollection.document(uid).delete().await()
+    }
+
+    suspend fun getSeats(seatMap: MutableState<Map<String, Seat>>) {
+        try {
+            val result = seatsCollection.get().await()
+            val seatData = result.documents.mapNotNull { doc ->
+                doc.toObject(Seat::class.java)
+            }.associateBy { it.label }
+
+            seatMap.value = seatData
+        } catch (e: Exception) {
+            Log.e("Firestore", "Failed to fetch seats", e)
+            seatMap.value = emptyMap()  // Optional fallback
+        }
+    }
+
+    //var seatMap = mutableStateOf<Map<String, Seat>>(emptyMap())
+    suspend fun initSeats() {
+        val rows = 'A'..'L'
+        val cols = 1..28
+
+        for (row in rows) {
+            for (col in cols) {
+                val label = "$row$col"
+                val seat = Seat(label = label, isBooked = false)
+
+                try {
+                    seatsCollection.document(label).set(seat).await()
+                    Log.d("Firestore", "Seat $label uploaded")
+                } catch (e: Exception) {
+                    Log.e("Firestore", "Failed to upload $label", e)
+                }
+            }
+        }
+    }
+
+    suspend fun setSeatStatus(seatLabel: String) {
+        seatsCollection.document(seatLabel).update("isBooked", true).await()
     }
 }

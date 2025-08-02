@@ -45,6 +45,7 @@ import com.example.cinemaxApp.feature.user.social.view.Instagram
 import com.example.cinemaxApp.feature.user.dashboard.view.UserDashboardScreen
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModelFactory
+import com.example.cinemaxApp.feature.user.movieBooking.view.SeatBookingScreen
 
 @Composable
 fun AppNavigation(navHostController: NavHostController, startScreen: String, authService: AuthService, firestoreService: FirestoreService) {
@@ -146,6 +147,9 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         }
         composable (Screen.AddAttendee.route){
             AddAttendeeScreen(navHostController, userBookingViewModel)
+        }
+        composable (Screen.SeatBooking.route){
+            SeatBookingScreen(navHostController, userBookingViewModel)
         }
         composable (Screen.SocialHandle.route){
             Instagram(navHostController)
