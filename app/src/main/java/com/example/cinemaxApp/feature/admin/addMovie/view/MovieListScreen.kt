@@ -104,9 +104,12 @@ fun MovieListScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                             }
 
                             Button(
-                                onClick = { nav.navigate(Screen.AllocateSeat.createRoute(movie.id)) },
+                                onClick = { viewModel.deleteMovie(movie = movie) },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6A1B9A))
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(
+                                    0xFFAA0000
+                                )
+                                )
                             ) {
                                 Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
                                 Spacer(Modifier.width(4.dp))

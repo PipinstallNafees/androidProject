@@ -5,16 +5,20 @@ import android.app.TimePickerDialog
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -39,7 +44,10 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
     var seats by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
-    var posterUri by remember { mutableStateOf<Uri?>(null) }
+    var posterUrl by remember { mutableStateOf("") }
+    var rating by remember { mutableStateOf("") }
+    var director by remember { mutableStateOf("") }
+    var genre by remember { mutableStateOf("") }
 
     val isFormValid = title.isNotBlank() && seats.toIntOrNull() != null
 
@@ -47,6 +55,7 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
     val calendar = Calendar.getInstance()
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
     val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+
 
     val datePickerDialog = remember {
         DatePickerDialog(
@@ -74,10 +83,6 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
         )
     }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> posterUri = uri }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +91,8 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                     colors = listOf(Color(0xFF1E1E2C), Color(0xFF23232F))
                 )
             )
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -115,43 +121,23 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("🎬 Movie Title") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("🎬 Movie Title") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = desc, onValueChange = { desc = it }, label = { Text("📝 Description") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = seats, onValueChange = { seats = it }, label = { Text("🪑 Total Seats") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = director, onValueChange = { director = it }, label = { Text("🎬 Director") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = rating, onValueChange = { rating = it }, label = { Text("⭐ Rating") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = genre, onValueChange = { genre = it }, label = { Text("🎭 Genre") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = posterUrl, onValueChange = { posterUrl = it }, label = { Text("🌐 Poster Image URL") }, modifier = Modifier.fillMaxWidth())
 
-                OutlinedTextField(
-                    value = desc,
-                    onValueChange = { desc = it },
-                    label = { Text("📝 Description") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = seats,
-                    onValueChange = { seats = it },
-                    label = { Text("🪑 Total Seats") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Button(
-                    onClick = { imagePickerLauncher.launch("image/*") },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A148C))
-                ) {
-                    Text("📁 Upload Poster", color = Color.White)
-                }
-
-                posterUri?.let {
-                    Text(
-                        text = "✅ Selected Image: ${it.lastPathSegment ?: "Image Selected"}",
-                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF388E3C))
+                if (posterUrl.isNotBlank()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(posterUrl),
+                        contentDescription = "Poster Preview",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(RoundedCornerShape(8.dp))
                     )
-                } ?: Text(
-                    text = "❌ No image selected",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
+                }
 
                 OutlinedTextField(
                     value = selectedDate,
@@ -182,9 +168,13 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                                 title,
                                 desc,
                                 seats.toInt(),
-                                posterUri?.toString() ?: "",
+                                posterUrl,
                                 selectedDate,
-                                selectedTime
+                                selectedTime,
+                                genre,
+                                rating,
+                                director
+
                             )
                             nav.popBackStack()
                         }
