@@ -135,13 +135,7 @@ fun SeatBookingScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
             Button(
                 {
                     viewModel.bookTicket(selectedSeats)
-
-                    nav.navigate(Screen.UserDashboard.route) {
-                        popUpTo(Screen.UserDashboard.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
+                    nav.navigate(Screen.Ticket.createRoute(true))
                 },
                 modifier = Modifier
                     .width(300.dp)

@@ -144,7 +144,7 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             DashboardCard("Booking", R.drawable.booking, Modifier.weight(1f),nav, Screen.BookMovie.route)
-                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),nav,)
+                            DashboardCard("E-Ticket", R.drawable.ticket, Modifier.weight(1f),nav, Screen.Ticket.createRoute(false))
                             DashboardCard("AboutUs", R.drawable.user, Modifier.weight(1f),nav,Screen.AboutUS.route)
                         }
                         Row(

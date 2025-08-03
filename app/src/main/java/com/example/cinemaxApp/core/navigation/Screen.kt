@@ -26,6 +26,9 @@ sealed class Screen(val route: String) {
     object BookMovie : Screen("BookMovie")
     object AddAttendee : Screen("AddAttendee")
     object SeatBooking : Screen("SeatBooking")
+    object Ticket : Screen("Ticket/{isNavFromSeatBooking}") {
+        fun createRoute(isNavFromSeatBooking: Boolean) = "Ticket/$isNavFromSeatBooking"
+    }
     object SocialHandle : Screen("SocialHandle")
     object AboutUS : Screen("AboutUs")
     object Rules : Screen("Rules")

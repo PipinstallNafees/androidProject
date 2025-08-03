@@ -46,6 +46,9 @@ import com.example.cinemaxApp.feature.user.dashboard.view.UserDashboardScreen
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModelFactory
 import com.example.cinemaxApp.feature.user.movieBooking.view.SeatBookingScreen
+import com.example.cinemaxApp.feature.user.ticket.view.TicketScreen
+import com.example.cinemaxApp.feature.user.ticket.viewmodel.TicketViewModel
+import com.example.cinemaxApp.feature.user.ticket.viewmodel.TicketViewModelFactory
 
 @Composable
 fun AppNavigation(navHostController: NavHostController, startScreen: String, authService: AuthService, firestoreService: FirestoreService) {
@@ -67,6 +70,9 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
     )
     val userBookingViewModel: UserBookingViewModel = viewModel(
         factory = UserBookingViewModelFactory(authService, firestoreService)
+    )
+    val ticketViewModel: TicketViewModel = viewModel(
+        factory = TicketViewModelFactory(authService, firestoreService)
     )
     val userLoginViewModel: UserLoginViewModel = viewModel(
         factory = UserLoginViewModelFactory(authService, firestoreService)
@@ -150,6 +156,13 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         }
         composable (Screen.SeatBooking.route){
             SeatBookingScreen(navHostController, userBookingViewModel)
+        }
+        composable (
+            route = Screen.Ticket.route,
+            arguments = listOf(navArgument("isNavFromSeatBooking") {type = NavType.BoolType})
+        ){ backStackEntry ->
+            val isNavFromSeatBooking = backStackEntry.arguments?.getBoolean("isNavFromSeatBooking")
+            TicketScreen(navHostController, userBookingViewModel, ticketViewModel, isNavFromSeatBooking!!)
         }
         composable (Screen.SocialHandle.route){
             Instagram(navHostController)
