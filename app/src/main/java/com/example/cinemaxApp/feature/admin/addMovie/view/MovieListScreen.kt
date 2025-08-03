@@ -7,11 +7,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -21,11 +20,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.cinemaxApp.core.model.Movie
 import com.example.cinemaxApp.core.navigation.Screen
 import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
 
 @Composable
 fun MovieListScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
+    var movieToDelete by remember { mutableStateOf<Movie?>(null) }
+
     LaunchedEffect(Unit) {
         viewModel.getMovieList()
     }
@@ -104,21 +106,41 @@ fun MovieListScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                             }
 
                             Button(
-                                onClick = { viewModel.deleteMovie(movie = movie) },
+                                onClick = { movieToDelete = movie },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(
-                                    0xFFAA0000
-                                )
-                                )
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFAA0000))
                             ) {
-                                Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
+                                Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
                                 Spacer(Modifier.width(4.dp))
-                                Text("Allocate", color = Color.White)
+                                Text("Delete", color = Color.White)
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    if (movieToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { movieToDelete = null },
+            title = { Text("Delete Movie") },
+            text = { Text("Are you sure you want to delete \"${movieToDelete?.title}\"? This action cannot be undone.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteMovie(movieToDelete!!)
+                        movieToDelete = null
+                    }
+                ) {
+                    Text("Delete", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { movieToDelete = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
