@@ -44,6 +44,10 @@ class FirestoreService {
         return if (movieSnapshot.exists()) movieSnapshot.toObject<Movie>() else null
     }
 
+    suspend fun deleteMovie(movie: Movie) {
+        moviesCollection.document(movie.id).delete().await()
+    }
+
     suspend fun getOpenMovie(): Movie? {
         val movieSnapshot = moviesCollection
             .whereEqualTo("isActive",true)

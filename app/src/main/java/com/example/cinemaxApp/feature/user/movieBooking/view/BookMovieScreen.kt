@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -33,7 +34,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
     val movie = viewModel.movie
 
     LaunchedEffect(Unit) {
-        viewModel.getMovie()
+        viewModel.getOpenMovie()
     }
 
     Column(
@@ -77,7 +78,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
             )
 
             Text(
-                text = "Director: Destin Daniel Cretton",
+                text = movie.director,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.LightGray
             )
@@ -85,7 +86,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "⭐", fontSize = 16.sp)
                 Text(
-                    text = "4.9",
+                    text = movie.rating.toString(),
                     color = Color(0xFFFFA000),
                     fontWeight = FontWeight.Medium
                 )
@@ -93,13 +94,15 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
+            LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Chip(text = "Horror")
-                Chip(text = "Mystery")
-                Chip(text = "01h 50m")
+                movie.genre?.forEach { genre ->
+                    item {
+                        Chip(text = genre)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))

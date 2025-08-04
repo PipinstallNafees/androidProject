@@ -91,6 +91,13 @@ class UserBookingViewModel(
         }
     }
 
+    fun getOpenMovie() {
+        viewModelScope.launch {
+            movie = firestoreService.getOpenMovie()
+            Log.d("OpenMovie", movie?.id ?: "No Movie Found")
+        }
+    }
+
     fun setAllSeat() {
         viewModelScope.launch {
             firestoreService.initSeats()

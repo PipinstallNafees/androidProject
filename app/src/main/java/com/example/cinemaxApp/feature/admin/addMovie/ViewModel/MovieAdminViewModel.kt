@@ -26,7 +26,7 @@ open class MovieAdminViewModel(
         }
     }
 
-    fun addMovie(title: String, desc: String, seats: Int, posterUrl: String = "", date: String, time: String) {
+    fun addMovie(title: String, desc: String, seats: Int, posterUrl: String = "", date: String, time: String, genre: String,rating: String, director: String) {
         viewModelScope.launch {
             val movie = Movie(
                 title = title,
@@ -35,13 +35,22 @@ open class MovieAdminViewModel(
                 totalSeats = seats,
                 bookedSeats = 0,
                 date = date,
-                time = time
+                time = time,
+                genre = genre.split(",").map { it.trim()},
+                rating = rating.toFloatOrNull(),
+                director = director,
             )
             val movieId = firestoreService.addMovie(movie)
             movieList = movieList + movie.copy(id = movieId)
         }
     }
 
+    fun deleteMovie(movie: Movie) {
+        viewModelScope.launch {
+            movieList = movieList.filter { it.id != movie.id }
+            firestoreService.deleteMovie(movie)
+        }
+    }
 
     open fun updateMovie(updated: Movie) {
         viewModelScope.launch {
