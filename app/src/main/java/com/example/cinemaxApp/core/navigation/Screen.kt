@@ -17,6 +17,9 @@ sealed class Screen(val route: String) {
         fun createRoute(movieId: String) = "AllocateSeat/$movieId"
     }
     object VerifyTicket : Screen("VerifyTicket")
+    object TicketDetails : Screen("TicketDetails/{ticketJson}") {
+        fun createRoute(ticketJson: String) = "TicketDetails/$ticketJson"
+    }
 
     // User
     object UserSignup : Screen("UserSignup")

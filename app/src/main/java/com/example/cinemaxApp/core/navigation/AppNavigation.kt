@@ -27,6 +27,7 @@ import com.example.cinemaxApp.feature.admin.dashboard.viewmodel.AdminDashboardVi
 import com.example.cinemaxApp.feature.admin.profile.view.AdminProfileScreen
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModel
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModelFactory
+import com.example.cinemaxApp.feature.admin.verifyTicket.view.TicketDetailsScreen
 import com.example.cinemaxApp.feature.admin.verifyTicket.view.VerifyTicketScreen
 import com.example.cinemaxApp.feature.user.About.AboutView
 import com.example.cinemaxApp.feature.user.auth.view.UserSignupScreen
@@ -129,6 +130,13 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         }
         composable(Screen.VerifyTicket.route) {
             VerifyTicketScreen(navHostController)
+        }
+        composable(
+            route = Screen.TicketDetails.route,
+            arguments = listOf(navArgument("ticketJson") {type = NavType.StringType})
+        ) { backStackEntry ->
+            val ticketJson = backStackEntry.arguments?.getString("ticketJson")
+            TicketDetailsScreen(navHostController, ticketJson!!)
         }
         composable(Screen.AboutUS.route) {
             AboutView(navHostController)
