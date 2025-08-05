@@ -51,18 +51,10 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
                     colors = listOf(Color(0xFF000000), Color(0xFF8D2D2D))
                 )
             )
+            .padding(bottom = 30.dp)
     ) {
         //  Header Image
-        Spacer(modifier = Modifier.padding(35.dp) )
-        Image(
-//            painter = painterResource(id = R.drawable.logo),
-            painter = painterResource(id = R.drawable.cinemax_logo_final),
-            contentDescription = "Cinemax Logo",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-        )
+        Spacer(modifier = Modifier.padding(5.dp) )
 
         // Welcome Texts
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
@@ -114,12 +106,24 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
             )
         }
 
+        Spacer(modifier = Modifier.padding(40.dp) )
+
+        Image(
+//            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = R.drawable.cinemax_logo_final),
+            contentDescription = "Cinemax Logo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+        )
+
         // Center the dashboard cards vertically
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
