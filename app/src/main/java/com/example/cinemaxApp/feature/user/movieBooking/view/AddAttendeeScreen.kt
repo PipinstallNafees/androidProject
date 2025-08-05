@@ -1,13 +1,26 @@
 package com.example.cinemaxApp.feature.user.movieBooking.view
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.cinemaxApp.core.model.Attendee
 import com.example.cinemaxApp.core.navigation.Screen
 import com.example.cinemaxApp.feature.user.movieBooking.viewmodel.UserBookingViewModel
@@ -53,52 +66,152 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .background(Color(0xFF121212))
+            .padding(horizontal = 25.dp, vertical = 40.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        Text("🎟 Enter Attendee Details", style = MaterialTheme.typography.headlineSmall)
-        Text("📝 Note: Only 2 persons are allowed per booking", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-        Spacer(Modifier.height(16.dp))
+        AddAttendeeTopBar({ nav.popBackStack() })
+        Spacer(modifier = Modifier.height(30.dp))
 
-        // Attendee 1
-        Text("👤 Attendee 1", style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(name1, { name1 = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-        Spacer(Modifier.height(12.dp))
-        OutlinedTextField(branch1, { branch1 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-        Spacer(Modifier.height(12.dp))
-        OutlinedTextField(sic1, { sic1 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-        Spacer(Modifier.height(24.dp))
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
+            //        Text("🎟 Enter Attendee Details", style = MaterialTheme.typography.headlineSmall)
+            Text("📝 Note: Max 2 persons are allowed per booking", style = MaterialTheme.typography.bodySmall, color = Color(0xFFCF6679))
+            Spacer(Modifier.height(16.dp))
 
-        // Ask for Attendee 2
-
-            Text("➕ Add second attendee?")
-            Spacer(Modifier.height(8.dp))
-            Row {
-//                Button(onClick = { addSecondPerson = true }) {
-//                    Text("Yes")
-//                }
-//                Spacer(Modifier.width(12.dp))
-//                OutlinedButton(onClick = { addSecondPerson = false }) {
-//                    Text("No")
-//                }
-                Switch(
-                    checked = addSecondPerson,
-                    onCheckedChange = { addSecondPerson = it }
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF37383F),
+                    contentColor = Color.White
                 )
+            ) {
+                Column (
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    // Attendee 1
+                    Text("👤 Attendee 1", style = MaterialTheme.typography.titleMedium)
+                    OutlinedTextField(
+                        name1,
+                        { name1 = it },
+                        label = { Text("Full Name") },
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            cursorColor = Color(0xFFCF6679),
+                            focusedIndicatorColor = Color(0xFFCF6679),
+                            unfocusedIndicatorColor = Color.Gray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLabelColor = Color(0xFFCF6679),
+                            unfocusedLabelColor = Color.Gray,
+                        )
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    OutlinedTextField(branch1, { branch1 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                        cursorColor = Color(0xFFCF6679),
+                        focusedIndicatorColor = Color(0xFFCF6679),
+                        unfocusedIndicatorColor = Color.Gray,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.LightGray,
+                        focusedLabelColor = Color(0xFFCF6679),
+                        unfocusedLabelColor = Color.Gray,
+                    ))
+                    Spacer(Modifier.height(12.dp))
+                    OutlinedTextField(sic1, { sic1 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                        cursorColor = Color(0xFFCF6679),
+                        focusedIndicatorColor = Color(0xFFCF6679),
+                        unfocusedIndicatorColor = Color.Gray,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.LightGray,
+                        focusedLabelColor = Color(0xFFCF6679),
+                        unfocusedLabelColor = Color.Gray,
+                    ))
+                    Spacer(Modifier.height(24.dp))
+                }
             }
 
-        // Attendee 2
-        if (addSecondPerson == true) {
-            Spacer(Modifier.height(32.dp))
-            Text("👤 Attendee 2", style = MaterialTheme.typography.titleMedium)
-            OutlinedTextField(name2, { name2 = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-            Spacer(Modifier.height(12.dp))
-            OutlinedTextField(branch2, { branch2 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-            Spacer(Modifier.height(12.dp))
-            OutlinedTextField(sic2, { sic2 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF37383F),
+                    contentColor = Color.White
+                )
+            ) {
+                Column (
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    // Ask for Attendee 2
+
+                    Text("➕ Add second attendee?")
+                    Spacer(Modifier.height(8.dp))
+                    Row {
+                        Switch(
+                            checked = addSecondPerson,
+                            onCheckedChange = { addSecondPerson = it },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color(0xFFCF6679),
+                                checkedTrackColor = Color(0xFFFFCDD2)
+                            )
+                        )
+                    }
+
+                    // Attendee 2
+                    if (addSecondPerson == true) {
+                        Spacer(Modifier.height(32.dp))
+                        Text("👤 Attendee 2", style = MaterialTheme.typography.titleMedium)
+                        OutlinedTextField(name2, { name2 = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                            cursorColor = Color(0xFFCF6679),
+                            focusedIndicatorColor = Color(0xFFCF6679),
+                            unfocusedIndicatorColor = Color.Gray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLabelColor = Color(0xFFCF6679),
+                            unfocusedLabelColor = Color.Gray,
+                        ))
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedTextField(branch2, { branch2 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                            cursorColor = Color(0xFFCF6679),
+                            focusedIndicatorColor = Color(0xFFCF6679),
+                            unfocusedIndicatorColor = Color.Gray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLabelColor = Color(0xFFCF6679),
+                            unfocusedLabelColor = Color.Gray,
+                        ))
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedTextField(sic2, { sic2 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                            cursorColor = Color(0xFFCF6679),
+                            focusedIndicatorColor = Color(0xFFCF6679),
+                            unfocusedIndicatorColor = Color.Gray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLabelColor = Color(0xFFCF6679),
+                            unfocusedLabelColor = Color.Gray,
+                        ))
+                    }
+                }
+            }
         }
 
-        Spacer(Modifier.height(32.dp))
+//        Spacer(Modifier.height(32.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         // Confirm Button
         Button(
@@ -122,9 +235,61 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 
             },
             enabled = name1.isNotBlank() && branch1.isNotBlank() && sic1.isNotBlank(),
-            modifier = Modifier.align(Alignment.End)
+//            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier
+//                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFEB5757),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.dp)
         ) {
-            Text("✅ Confirm Booking")
+            Text("Proceed To Seat booking")
         }
     }
+}
+
+
+@Composable
+fun AddAttendeeTopBar(onBackClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp)
+            .background(Color(0xFF121212)), // optional background
+        contentAlignment = Alignment.TopStart
+    ) {
+        // Centered Title
+        Text(
+            text = "Add Attendee",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.Center),
+            textAlign = TextAlign.Center
+        )
+
+        // Left-aligned Back Icon
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun AddAttendeeScreenPreview() {
+    AddAttendeeScreen(rememberNavController(), viewModel())
 }
