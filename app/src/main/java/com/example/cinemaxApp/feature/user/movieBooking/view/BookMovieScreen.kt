@@ -52,7 +52,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 //            ),
 //            modifier = Modifier.padding(bottom = 16.dp)
 //        )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         if (movie != null) {
             viewModel.isBooked(movie.id)
@@ -132,7 +132,8 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                     .height(56.dp),
                 enabled = !viewModel.isBookedState,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (!viewModel.isBookedState) Color(0xFF448AFF) else Color(0xFF424242),
+                    // Previous color --> Color(0xFF448AFF)
+                    containerColor = if (!viewModel.isBookedState) Color(0xFFCF6679) else Color(0xFF424242),
                     contentColor = Color.White,
                     disabledContainerColor = Color(0xFF424242),
                     disabledContentColor = Color.White
@@ -190,7 +191,7 @@ fun RemoteImageFromUrl(
             contentDescription = "Movie Poster",
             contentScale = contentScale,
             modifier = modifier.fillMaxSize()
-                .aspectRatio(2f / 2.5f)
+                .aspectRatio(2f / 2.7f)
                 .clip(RoundedCornerShape(11.dp))
         )
     }
