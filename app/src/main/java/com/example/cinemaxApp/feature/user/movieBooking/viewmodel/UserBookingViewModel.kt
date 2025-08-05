@@ -86,8 +86,14 @@ class UserBookingViewModel(
 //    add fun to check if already booked
 
     fun getAllSeatData() {
+        Log.d("GetAllSeat0", "Inside the function")
         viewModelScope.launch {
-            firestoreService.getSeats(seatMap)
+            try {
+                firestoreService.getSeats(movie!!.id, seatMap)
+                Log.d("GetAllSeat", seatMap.toString())
+            } catch (e: Exception) {
+                Log.d("GetAllSeat", e.toString())
+            }
         }
     }
 
@@ -98,16 +104,10 @@ class UserBookingViewModel(
         }
     }
 
-    fun setAllSeat() {
-        viewModelScope.launch {
-            firestoreService.initSeats()
-        }
-    }
-
     fun setSeatsStatus(selectedSeats: MutableState<Set<String>>) {
         viewModelScope.launch {
             selectedSeats.value.forEach { seat ->
-                firestoreService.setSeatStatus(seat)
+                firestoreService.setSeatStatus(seat, movie!!.id)
             }
         }
     }

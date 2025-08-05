@@ -52,7 +52,7 @@ fun AllocateSeatScreen(nav: NavHostController, viewModel: MovieAdminViewModel, i
                 onClick = {
                     val seat = seatNo.toIntOrNull()
                     if (seat != null) {
-                        viewModel.allocateSeat(id, seat)
+//                        viewModel.allocateSeat(id, seat)
                         seatNo = ""
                     }
                 },

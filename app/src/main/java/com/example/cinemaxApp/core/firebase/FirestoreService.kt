@@ -71,7 +71,9 @@ class FirestoreService {
     }
 
     suspend fun getAllMovies(): List<Movie> {
-        val movieSnapshot = moviesCollection.get().await()
+        val movieSnapshot = moviesCollection
+            .orderBy("date", Query.Direction.DESCENDING)
+            .get().await()
         return try {
             movieSnapshot.documents.mapNotNull { it.toObject(Movie::class.java) }
         } catch(e: Exception) {
@@ -141,9 +143,11 @@ class FirestoreService {
         usersCollection.document(uid).delete().await()
     }
 
-    suspend fun getSeats(seatMap: MutableState<Map<String, Seat>>) {
+    suspend fun getSeats(movieId: String, seatMap: MutableState<Map<String, Seat>>) {
         try {
-            val result = seatsCollection.get().await()
+            val result = seatsCollection
+                .whereEqualTo("movieId",movieId)
+                .get().await()
             val seatData = result.documents.mapNotNull { doc ->
                 doc.toObject(Seat::class.java)
             }.associateBy { it.label }
@@ -156,26 +160,69 @@ class FirestoreService {
     }
 
     //var seatMap = mutableStateOf<Map<String, Seat>>(emptyMap())
-    suspend fun initSeats() {
+    suspend fun initSeats(movieId: String) {
         val rows = 'A'..'L'
         val cols = 1..28
+        val batch = db.batch()
 
         for (row in rows) {
             for (col in cols) {
                 val label = "$row$col"
-                val seat = Seat(label = label, isBooked = false)
+                val seat = Seat(label = label, isBooked = false, movieId = movieId)
 
-                try {
-                    seatsCollection.document(label).set(seat).await()
-                    Log.d("Firestore", "Seat $label uploaded")
-                } catch (e: Exception) {
-                    Log.e("Firestore", "Failed to upload $label", e)
-                }
+                val docRef = seatsCollection.document()
+                batch.set(docRef, seat)
             }
+        }
+
+        try {
+            batch.commit().await()
+            Log.d("Firestore", "All seats uploaded successfully")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Failed to upload seats", e)
         }
     }
 
-    suspend fun setSeatStatus(seatLabel: String) {
-        seatsCollection.document(seatLabel).update("isBooked", true).await()
+    suspend fun resetSeats() {
+        seatsCollection.get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val docRef = seatsCollection.document(document.id)
+
+                    docRef.update("isBooked", false)
+                        .addOnSuccessListener {
+                            Log.d("FirestoreUpdate", "Updated ${document.id}")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("FirestoreUpdate", "Failed to update ${document.id}", e)
+                        }
+                }
+
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreUpdate", "Failed to fetch documents", e)
+            }
+    }
+
+    suspend fun setSeatStatus(seatLabel: String, movieId: String) {
+//        seatsCollection.document(seatLabel).update("isBooked", true).await()
+        try {
+            val querySnapshot = seatsCollection
+                .whereEqualTo("movieId", movieId)
+                .whereEqualTo("label", seatLabel)
+                .get()
+                .await()
+
+            if (!querySnapshot.isEmpty) {
+                val docRef = querySnapshot.documents[0].reference
+                docRef.update("isBooked", true).await()
+                Log.d("Firestore", "Seat $seatLabel updated successfully")
+            } else {
+                Log.w("Firestore", "No matching seat found")
+            }
+
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error updating seat status", e)
+        }
     }
 }
