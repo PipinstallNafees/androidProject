@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.androidproject.R // Update if your logo is in a different package
@@ -33,10 +37,11 @@ fun AboutView(nav: NavHostController) {
                 )
             )
     ) {
+        AboutUsTopBar( { nav.popBackStack() } )
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
             contentAlignment = Alignment.Center
         ) {
             Card(
@@ -44,7 +49,11 @@ fun AboutView(nav: NavHostController) {
                 elevation = CardDefaults.cardElevation(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
+                    .wrapContentHeight(),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF37383F),
+                    contentColor = Color.White
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -74,6 +83,43 @@ fun AboutView(nav: NavHostController) {
         }
     }
 }
+
+
+@Composable
+fun AboutUsTopBar(onBackClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp, end = 25.dp, top = 40.dp, bottom = 20.dp)
+            .background(Color.Transparent), // optional background
+        contentAlignment = Alignment.TopStart
+    ) {
+        // Centered Title
+        Text(
+            text = "About Us",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.Center),
+            textAlign = TextAlign.Center
+        )
+
+        // Left-aligned Back Icon
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
