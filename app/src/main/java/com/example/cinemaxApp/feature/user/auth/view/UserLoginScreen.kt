@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
@@ -92,7 +93,7 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
                         .align(Alignment.CenterHorizontally)
                 )
 
-                Divider(thickness = 1.dp, color = mahroon)
+                HorizontalDivider( thickness = 1.dp, color = mahroon)
 
                 Text(
                     text = "Enter your Email ID",
