@@ -170,59 +170,50 @@ fun Chip(text: String) {
 fun RemoteImageFromUrl(
     url: String?,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.FillBounds
 ) {
-    Column(
-        modifier = Modifier
+    val fallbackUrl = "https://www.prokerala.com/movies/assets/img/no-poster-available.jpg"
+    val imageUrl = url.takeIf { !it.isNullOrBlank() } ?: fallbackUrl
+
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .crossfade(true)
+            .diskCachePolicy(coil.request.CachePolicy.ENABLED)
+            .build()
+    )
+    val imageState = painter.state
+
+    Box(
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp) // <-- this applies around the image
+            .height(420.dp)
+            .clip(RoundedCornerShape(11.dp))
+            .background(Color(0xFF1F1F1F)), // subtle background while loading
+        contentAlignment = Alignment.Center
     ) {
-        val fallbackUrl = "https://www.prokerala.com/movies/assets/img/no-poster-available.jpg"
-        val imageUrl = url.takeIf { !it.isNullOrBlank() } ?: fallbackUrl
-
-        Log.d("ImageUrl", imageUrl)
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-//            .error(fallbackUrl)
-                .build(),
-            contentDescription = "Movie Poster",
-            contentScale = contentScale,
-            modifier = modifier.fillMaxSize()
-                .aspectRatio(2f / 2.5f)
-                .clip(RoundedCornerShape(11.dp))
-        )
+        when (imageState) {
+            is AsyncImagePainter.State.Loading -> {
+                CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp)
+            }
+            is AsyncImagePainter.State.Error -> {
+                Image(
+                    painter = rememberAsyncImagePainter(fallbackUrl),
+                    contentDescription = "Fallback Poster",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale
+                )
+            }
+            else -> {
+                Image(
+                    painter = painter,
+                    contentDescription = "Movie Poster",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale
+                )
+            }
+        }
     }
-
-//    val painter = rememberAsyncImagePainter(model = imageUrl)
-//
-//    when (painter.state) {
-//        is AsyncImagePainter.State.Loading -> {
-//            Log.d("ImageState", "Loading")
-//            Box(modifier = modifier, contentAlignment = Alignment.Center) {
-//                CircularProgressIndicator(color = Color.White)
-//            }
-//        }
-//        is AsyncImagePainter.State.Error -> {
-//            Log.d("ImageState", "Fallback Poster")
-//            AsyncImage(
-//                model = fallbackUrl,
-//                contentDescription = "Fallback Poster",
-//                modifier = modifier,
-//                contentScale = contentScale
-//            )
-//        }
-//        else -> {
-//            Log.d("ImageState", "Actual Poster")
-//            Image(
-//                painter = painter,
-//                contentDescription = "Movie Poster",
-//                modifier = modifier,
-//                contentScale = contentScale
-//            )
-//        }
-//    }
 }
 
 @Composable

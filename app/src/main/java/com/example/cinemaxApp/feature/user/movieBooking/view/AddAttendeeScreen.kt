@@ -1,11 +1,13 @@
 package com.example.cinemaxApp.feature.user.movieBooking.view
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.cinemaxApp.core.model.Attendee
@@ -53,6 +55,7 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF121212))
             .padding(24.dp),
         verticalArrangement = Arrangement.Top
     ) {
