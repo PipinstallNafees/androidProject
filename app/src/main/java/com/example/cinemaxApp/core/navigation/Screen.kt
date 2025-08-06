@@ -17,6 +17,9 @@ sealed class Screen(val route: String) {
         fun createRoute(movieId: String) = "AllocateSeat/$movieId"
     }
     object VerifyTicket : Screen("VerifyTicket")
+    object TicketDetails : Screen("TicketDetails/{ticketJson}") {
+        fun createRoute(ticketJson: String) = "TicketDetails/$ticketJson"
+    }
 
     // User
     object UserSignup : Screen("UserSignup")
@@ -32,5 +35,6 @@ sealed class Screen(val route: String) {
     object SocialHandle : Screen("SocialHandle")
     object AboutUS : Screen("AboutUs")
     object Rules : Screen("Rules")
+    object Developer : Screen("Developer")
     // TODO: Find About '/' using for sub category, wouldn't it affect the {data}
 }

@@ -155,7 +155,7 @@ fun AdminDashboardScreen(nav: NavHostController, viewModel: AdminDashboardViewMo
                         ) {
                             DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),nav, Screen.SocialHandle.route)
                             DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),nav, Screen.Rules.route)
-                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav)
+                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav,Screen.Developer.route)
                         }
                     }
                 }

@@ -42,6 +42,8 @@ open class MovieAdminViewModel(
             )
             val movieId = firestoreService.addMovie(movie)
             movieList = movieList + movie.copy(id = movieId)
+            firestoreService.initSeats(movieId)
+
         }
     }
 
@@ -64,13 +66,5 @@ open class MovieAdminViewModel(
     }
 
     open fun getMovieById(id: String): Movie? = movieList.find { it.id == id }
-
-    fun allocateSeat(movieId: String, seatNo: Int) {
-//        movieList = movieList.map {
-//            if (it.id == movieId && seatNo <= it.totalSeats && !it.allocatedSeats.contains(seatNo)) {
-//                it.copy(allocatedSeats = it.allocatedSeats + seatNo)
-//            } else it
-//        }
-    }
 
 }

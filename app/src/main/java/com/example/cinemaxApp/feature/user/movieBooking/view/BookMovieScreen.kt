@@ -52,7 +52,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 //            ),
 //            modifier = Modifier.padding(bottom = 16.dp)
 //        )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         if (movie != null) {
             viewModel.isBooked(movie.id)
@@ -132,7 +132,8 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                     .height(56.dp),
                 enabled = !viewModel.isBookedState,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (!viewModel.isBookedState) Color(0xFF448AFF) else Color(0xFF424242),
+                    // Previous color --> Color(0xFF448AFF)
+                    containerColor = if (!viewModel.isBookedState) Color(0xFFCF6679) else Color(0xFF424242),
                     contentColor = Color.White,
                     disabledContainerColor = Color(0xFF424242),
                     disabledContentColor = Color.White
@@ -170,50 +171,59 @@ fun Chip(text: String) {
 fun RemoteImageFromUrl(
     url: String?,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.FillBounds
+    contentScale: ContentScale = ContentScale.Crop
 ) {
-    val fallbackUrl = "https://www.prokerala.com/movies/assets/img/no-poster-available.jpg"
-    val imageUrl = url.takeIf { !it.isNullOrBlank() } ?: fallbackUrl
-
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUrl)
-            .crossfade(true)
-            .diskCachePolicy(coil.request.CachePolicy.ENABLED)
-            .build()
-    )
-    val imageState = painter.state
-
-    Box(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .height(420.dp)
-            .clip(RoundedCornerShape(11.dp))
-            .background(Color(0xFF1F1F1F)), // subtle background while loading
-        contentAlignment = Alignment.Center
+            .padding(vertical = 16.dp) // <-- this applies around the image
     ) {
-        when (imageState) {
-            is AsyncImagePainter.State.Loading -> {
-                CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp)
-            }
-            is AsyncImagePainter.State.Error -> {
-                Image(
-                    painter = rememberAsyncImagePainter(fallbackUrl),
-                    contentDescription = "Fallback Poster",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = contentScale
-                )
-            }
-            else -> {
-                Image(
-                    painter = painter,
-                    contentDescription = "Movie Poster",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = contentScale
-                )
-            }
-        }
+        val fallbackUrl = "https://www.prokerala.com/movies/assets/img/no-poster-available.jpg"
+        val imageUrl = url.takeIf { !it.isNullOrBlank() } ?: fallbackUrl
+
+        Log.d("ImageUrl", imageUrl)
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+//            .error(fallbackUrl)
+                .build(),
+            contentDescription = "Movie Poster",
+            contentScale = contentScale,
+            modifier = modifier.fillMaxSize()
+                .aspectRatio(2f / 2.7f)
+                .clip(RoundedCornerShape(11.dp))
+        )
     }
+
+//    val painter = rememberAsyncImagePainter(model = imageUrl)
+//
+//    when (painter.state) {
+//        is AsyncImagePainter.State.Loading -> {
+//            Log.d("ImageState", "Loading")
+//            Box(modifier = modifier, contentAlignment = Alignment.Center) {
+//                CircularProgressIndicator(color = Color.White)
+//            }
+//        }
+//        is AsyncImagePainter.State.Error -> {
+//            Log.d("ImageState", "Fallback Poster")
+//            AsyncImage(
+//                model = fallbackUrl,
+//                contentDescription = "Fallback Poster",
+//                modifier = modifier,
+//                contentScale = contentScale
+//            )
+//        }
+//        else -> {
+//            Log.d("ImageState", "Actual Poster")
+//            Image(
+//                painter = painter,
+//                contentDescription = "Movie Poster",
+//                modifier = modifier,
+//                contentScale = contentScale
+//            )
+//        }
+//    }
 }
 
 @Composable

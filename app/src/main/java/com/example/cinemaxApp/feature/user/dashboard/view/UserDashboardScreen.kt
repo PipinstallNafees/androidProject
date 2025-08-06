@@ -21,7 +21,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +39,32 @@ import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardView
 fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewModel) {
     var userName by remember { mutableStateOf("") }
 
+    val cinemaQuotes = listOf(
+        // Quotes about cinema
+        "Cinema is a matter of what's in the frame and what's out. — Martin Scorsese",
+        "Film is truth 24 times a second. — Jean-Luc Godard",
+        "Cinema can fill in the empty spaces of your life and your loneliness. — Pedro Almodóvar",
+        "Movies touch our hearts and awaken our vision. — Martin Scorsese",
+        "The power of cinema is that it gives you empathy. — Roger Ebert",
+        "Cinema is the most beautiful fraud in the world. — Jean-Luc Godard",
+        "Movies are like an expensive form of therapy for me. — Tim Burton",
+        "Cinema should make you forget you are sitting in a theater. — Roman Polanski",
+        "A film is – or should be – more like music than like fiction. — Stanley Kubrick",
+        "Cinema is an empathy machine. — Roger Ebert",
+
+        // Popular film dialogues
+        "I'm going to make him an offer he can't refuse. — The Godfather (1972)",
+        "May the Force be with you. — Star Wars (1977)",
+        "Why so serious? — The Dark Knight (2008)",
+        "Just keep swimming. — Finding Nemo (2003)",
+        "With great power comes great responsibility. — Spider-Man (2002)",
+        "You can't handle the truth! — A Few Good Men (1992)",
+        "I'll be back. — The Terminator (1984)",
+        "Bade bade deshon mein aisi chhoti chhoti baatein hoti rehti hain, Senorita. — Dilwale Dulhania Le Jayenge (1995)",
+        "Mogambo khush hua. — Mr. India (1987)",
+        "Kitne aadmi the? — Sholay (1975)"
+    )
+
     userName = viewModel.userName
 
     LaunchedEffect(Unit) {
@@ -51,18 +79,10 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
                     colors = listOf(Color(0xFF000000), Color(0xFF8D2D2D))
                 )
             )
+            .padding(bottom = 30.dp)
     ) {
         //  Header Image
-        Spacer(modifier = Modifier.padding(35.dp) )
-        Image(
-//            painter = painterResource(id = R.drawable.logo),
-            painter = painterResource(id = R.drawable.cinemax_logo_final),
-            contentDescription = "Cinemax Logo",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-        )
+        Spacer(modifier = Modifier.padding(15.dp) )
 
         // Welcome Texts
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)) {
@@ -114,12 +134,27 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
             )
         }
 
+        Spacer(modifier = Modifier.padding(40.dp) )
+
+        Image(
+//            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = R.drawable.cinemax_logo_final),
+            contentDescription = "Cinemax Logo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        val randomQuote = remember { cinemaQuotes.random() }
+
+        QuoteDisplay(quote = randomQuote)
         // Center the dashboard cards vertically
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -153,7 +188,7 @@ fun UserDashboardScreen(nav: NavHostController, viewModel: UserDashboardViewMode
                         ) {
                             DashboardCard("Instagram", R.drawable.developer, Modifier.weight(1f),nav, Screen.SocialHandle.route)
                             DashboardCard("Rules", R.drawable.user, Modifier.weight(1f),nav,Screen.Rules.route)
-                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav)
+                            DashboardCard("Developer", R.drawable.developer, Modifier.weight(1f),nav, Screen.Developer.route)
                         }
                     }
                 }
@@ -193,6 +228,25 @@ fun DashboardCard(title: String, imageId: Int, modifier: Modifier = Modifier,nav
                 )
             )
         }
+    }
+}
+
+@Composable
+fun QuoteDisplay(quote: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "\"$quote\"",
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 

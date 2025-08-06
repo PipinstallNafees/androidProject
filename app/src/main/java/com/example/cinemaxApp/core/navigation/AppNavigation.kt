@@ -27,6 +27,7 @@ import com.example.cinemaxApp.feature.admin.dashboard.viewmodel.AdminDashboardVi
 import com.example.cinemaxApp.feature.admin.profile.view.AdminProfileScreen
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModel
 import com.example.cinemaxApp.feature.admin.profile.viewmodel.AdminProfileViewModelFactory
+import com.example.cinemaxApp.feature.admin.verifyTicket.view.TicketDetailsScreen
 import com.example.cinemaxApp.feature.admin.verifyTicket.view.VerifyTicketScreen
 import com.example.cinemaxApp.feature.user.About.AboutView
 import com.example.cinemaxApp.feature.user.auth.view.UserSignupScreen
@@ -45,6 +46,7 @@ import com.example.cinemaxApp.feature.user.social.view.Instagram
 import com.example.cinemaxApp.feature.user.dashboard.view.UserDashboardScreen
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModelFactory
+import com.example.cinemaxApp.feature.user.developers.DevelopersScreen
 import com.example.cinemaxApp.feature.user.movieBooking.view.SeatBookingScreen
 import com.example.cinemaxApp.feature.user.ticket.view.TicketScreen
 import com.example.cinemaxApp.feature.user.ticket.viewmodel.TicketViewModel
@@ -130,8 +132,18 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         composable(Screen.VerifyTicket.route) {
             VerifyTicketScreen(navHostController)
         }
+        composable(
+            route = Screen.TicketDetails.route,
+            arguments = listOf(navArgument("ticketJson") {type = NavType.StringType})
+        ) { backStackEntry ->
+            val ticketJson = backStackEntry.arguments?.getString("ticketJson")
+            TicketDetailsScreen(navHostController, ticketJson!!)
+        }
         composable(Screen.AboutUS.route) {
             AboutView(navHostController)
+        }
+        composable (Screen.Developer.route) {
+            DevelopersScreen(navHostController)
         }
 
 
