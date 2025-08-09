@@ -35,5 +35,6 @@ sealed class Screen(val route: String) {
     object SocialHandle : Screen("SocialHandle")
     object AboutUS : Screen("AboutUs")
     object Rules : Screen("Rules")
+    object Developer : Screen("Developer")
     // TODO: Find About '/' using for sub category, wouldn't it affect the {data}
 }

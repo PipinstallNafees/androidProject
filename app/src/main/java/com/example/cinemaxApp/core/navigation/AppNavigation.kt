@@ -46,6 +46,7 @@ import com.example.cinemaxApp.feature.user.social.view.Instagram
 import com.example.cinemaxApp.feature.user.dashboard.view.UserDashboardScreen
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModel
 import com.example.cinemaxApp.feature.user.dashboard.viewmodel.UserDashboardViewModelFactory
+import com.example.cinemaxApp.feature.user.developers.DevelopersScreen
 import com.example.cinemaxApp.feature.user.movieBooking.view.SeatBookingScreen
 import com.example.cinemaxApp.feature.user.ticket.view.TicketScreen
 import com.example.cinemaxApp.feature.user.ticket.viewmodel.TicketViewModel
@@ -140,6 +141,9 @@ fun AppNavigation(navHostController: NavHostController, startScreen: String, aut
         }
         composable(Screen.AboutUS.route) {
             AboutView(navHostController)
+        }
+        composable (Screen.Developer.route) {
+            DevelopersScreen(navHostController)
         }
 
 
