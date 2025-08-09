@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cinemaxApp.core.model.Attendee
 import com.example.cinemaxApp.core.navigation.Screen
+import com.example.cinemaxApp.feature.user.auth.view.capitalizeWords
 import com.example.cinemaxApp.feature.user.movieBooking.viewmodel.UserBookingViewModel
 
 @Composable
@@ -63,6 +64,8 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
     var branch2 by remember { mutableStateOf("") }
     var sic2 by remember { mutableStateOf("") }
 
+    val sicPattern = Regex("^[0-9]{2}[BM][A-Z]{2}[A-Z][0-9]{2}$")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,6 +78,7 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
+                .imePadding()
         ) {
             //        Text("🎟 Enter Attendee Details", style = MaterialTheme.typography.headlineSmall)
             Text("📝 Note: Max 2 persons are allowed per booking", style = MaterialTheme.typography.bodySmall, color = Color(0xFFCF6679))
@@ -94,7 +98,10 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                     Text("👤 Attendee 1", style = MaterialTheme.typography.titleMedium)
                     OutlinedTextField(
                         name1,
-                        { name1 = it },
+                        onValueChange = { newValue ->
+                            name1 = capitalizeWords(newValue)
+//                            name1 = it
+                        },
                         label = { Text("Full Name") },
                         modifier = Modifier.fillMaxWidth()
                             .padding(vertical = 6.dp),
@@ -112,7 +119,14 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                         )
                     )
                     Spacer(Modifier.height(12.dp))
-                    OutlinedTextField(branch1, { branch1 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                    OutlinedTextField(branch1,
+                        onValueChange = { newValue ->
+                            val formatted = newValue.uppercase()
+                            if (formatted.length <= 3) { // limit length
+                                branch1 = formatted
+                            }
+                        },
+                        label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
                         cursorColor = Color(0xFFCF6679),
                         focusedIndicatorColor = Color(0xFFCF6679),
                         unfocusedIndicatorColor = Color.Gray,
@@ -124,7 +138,15 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                         unfocusedLabelColor = Color.Gray,
                     ))
                     Spacer(Modifier.height(12.dp))
-                    OutlinedTextField(sic1, { sic1 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                    OutlinedTextField(sic1,
+                        onValueChange = { newValue ->
+                            val formatted = newValue.uppercase()
+                            if (formatted.length <= 8) { // limit length
+                                sic1 = formatted
+                            }
+                        },
+                        isError = sic1.isNotEmpty() && !sicPattern.matches(sic1),
+                        label = { Text("SIC") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
                         cursorColor = Color(0xFFCF6679),
                         focusedIndicatorColor = Color(0xFFCF6679),
                         unfocusedIndicatorColor = Color.Gray,
@@ -170,7 +192,12 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                     if (addSecondPerson == true) {
                         Spacer(Modifier.height(32.dp))
                         Text("👤 Attendee 2", style = MaterialTheme.typography.titleMedium)
-                        OutlinedTextField(name2, { name2 = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                        OutlinedTextField(name2,
+                            onValueChange = { newValue ->
+                                name2 = capitalizeWords(newValue)
+//                            name2 = it
+                            },
+                            label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
                             cursorColor = Color(0xFFCF6679),
                             focusedIndicatorColor = Color(0xFFCF6679),
                             unfocusedIndicatorColor = Color.Gray,
@@ -182,7 +209,14 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                             unfocusedLabelColor = Color.Gray,
                         ))
                         Spacer(Modifier.height(12.dp))
-                        OutlinedTextField(branch2, { branch2 = it }, label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                        OutlinedTextField(branch2,
+                            onValueChange = { newValue ->
+                                val formatted = newValue.uppercase()
+                                if (formatted.length <= 3) { // limit length
+                                    branch2 = formatted
+                                }
+                            },
+                            label = { Text("Branch") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
                             cursorColor = Color(0xFFCF6679),
                             focusedIndicatorColor = Color(0xFFCF6679),
                             unfocusedIndicatorColor = Color.Gray,
@@ -194,7 +228,15 @@ fun AddAttendeeScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                             unfocusedLabelColor = Color.Gray,
                         ))
                         Spacer(Modifier.height(12.dp))
-                        OutlinedTextField(sic2, { sic2 = it }, label = { Text("SIC ID") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
+                        OutlinedTextField(sic2,
+                            onValueChange = { newValue ->
+                                val formatted = newValue.uppercase()
+                                if (formatted.length <= 8) { // limit length
+                                    sic2 = formatted
+                                }
+                            },
+                            isError = sic2.isNotEmpty() && !sicPattern.matches(sic2),
+                            label = { Text("SIC") }, modifier = Modifier.fillMaxWidth(), singleLine = true, colors = TextFieldDefaults.colors(
                             cursorColor = Color(0xFFCF6679),
                             focusedIndicatorColor = Color(0xFFCF6679),
                             unfocusedIndicatorColor = Color.Gray,

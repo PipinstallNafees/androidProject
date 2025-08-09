@@ -6,32 +6,46 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinemaxApp.core.navigation.Screen
 import com.example.cinemaxApp.feature.user.auth.viewmodel.UserLoginViewModel
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
@@ -41,6 +55,8 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
     val context = LocalContext.current
     val userId = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    val domain = "@silicon.ac.in"
     var coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -50,20 +66,23 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
             Brush.verticalGradient(
                 colors = listOf(Color(0xFF000000), Color(0xFF8D2D2D))
             )
-            ),
+            )
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+            .imePadding(),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "🎬 Welcome to Cinemax User",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                color = mahroon,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .fillMaxWidth()
-        )
+//        Text(
+//            text = "🎬 Welcome to Cinemax User",
+//            style = MaterialTheme.typography.headlineMedium.copy(
+//                color = mahroon,
+//                fontFamily = FontFamily.Monospace,
+//                fontWeight = FontWeight.Bold
+//            ),
+//            modifier = Modifier
+//                .padding(bottom = 24.dp)
+//                .fillMaxWidth()
+//        )
 
         Box(
             modifier = Modifier
@@ -81,7 +100,8 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "👋 Hello User",
+//                    text = "👋 Hello User",
+                    text = "User Login",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Bold,
@@ -94,49 +114,102 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
 
                 Divider(thickness = 1.dp, color = mahroon)
 
-                Text(
-                    text = "Enter your Email ID",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.SemiBold,
-                        color = carbonBlack
-                    )
-                )
+//                Text(
+//                    text = "Enter your Email ID",
+//                    style = MaterialTheme.typography.titleMedium.copy(
+//                        fontFamily = FontFamily.Monospace,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = carbonBlack
+//                    )
+//                )
 
                 OutlinedTextField(
                     value = userId.value,
-                    onValueChange = { userId.value = it },
-                    label = {
-                        Text("email ID", fontFamily = FontFamily.Monospace)
+                    onValueChange = { newValue ->
+                        // Block "@" and spaces
+                        if (!newValue.contains("@") && !newValue.contains(" ")) {
+                            userId.value = newValue
+                        }
+//                        userId.value = it
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = mahroon,
-                        unfocusedBorderColor = Color.Gray
-                    )
-                )
-
-                Text(
-                    text = "Enter your Password",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.SemiBold,
-                        color = carbonBlack
-                    )
-                )
-                OutlinedTextField(
-                    value = password.value,
-                    onValueChange = { password.value = it },
-                    label = { Text("Password", fontFamily = FontFamily.Monospace) },
+                    label = {
+                        Text("Email ID", fontFamily = FontFamily.Monospace)
+                    },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = mahroon,
                         unfocusedBorderColor = Color.Gray
                     ),
-                    visualTransformation = PasswordVisualTransformation()
+                    trailingIcon = {
+                        Row {
+                            Text(domain, fontFamily = FontFamily.Monospace)
+                            Spacer(modifier = Modifier.width(15.dp))
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
+
+//                Text(
+//                    text = "Enter your Password",
+//                    style = MaterialTheme.typography.titleMedium.copy(
+//                        fontFamily = FontFamily.Monospace,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = carbonBlack
+//                    )
+//                )
+                OutlinedTextField(
+                    value = password.value,
+                    onValueChange = { newValue ->
+                        if (!newValue.contains(" ")) {
+                            password.value = newValue
+                        }
+//                        password.value = it
+                    },
+                    label = { Text("Password", fontFamily = FontFamily.Monospace) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = mahroon,
+                        unfocusedBorderColor = Color.Gray
+                    ),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val image = if (passwordVisible) Icons.Default.VisibilityOff
+                        else Icons.Default.Visibility
+
+                        IconButton(onClick = {passwordVisible = !passwordVisible}) {
+                            Icon(imageVector = image, contentDescription = null)
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    )
+                )
+                TextButton(
+                    onClick = {
+                        // Navigate to Forgot Password screen
+//                        nav.navigate("forgotPassword")
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                        .defaultMinSize(minHeight = 0.dp) // remove default min height
+                        .padding(0.dp),                   // remove extra modifier padding
+                    contentPadding = PaddingValues(0.dp)  // remove internal content padding
+                ) {
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(
+                            color = mahroon,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
 
                 Button(
                     onClick = {
@@ -149,7 +222,7 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
 //                        }
 
                         coroutineScope.launch {
-                            var result = viewModel.login(userId.value, password.value)
+                            var result = viewModel.login(userId.value + domain, password.value)
                             if (result.isSuccess) {
                                 Log.d("UserLoginView", "Login Successful")
                                 // Navigate to admin dashboard or perform login action
@@ -182,22 +255,7 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
                         )
                     )
                 }
-                TextButton(
-                    onClick = {
-                        // Navigate to Forgot Password screen
-//                        nav.navigate("forgotPassword")
-                    },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = "Forgot Password?",
-                        style = TextStyle(
-                            color = mahroon,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+
                 TextButton(
                     onClick = {
                         // Handle user registration logic here
@@ -206,7 +264,7 @@ fun UserLoginScreen(nav: NavHostController, viewModel: UserLoginViewModel) {
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        text = "New Register ?",
+                        text = "Don't have an account? Register Now",
                         style = TextStyle(
                             color = mahroon,
                             fontFamily = FontFamily.Monospace,
