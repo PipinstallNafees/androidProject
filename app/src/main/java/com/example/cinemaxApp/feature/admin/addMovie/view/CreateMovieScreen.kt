@@ -11,9 +11,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +27,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.cinemaxApp.feature.admin.addMovie.viewmodel.MovieAdminViewModel
+import com.example.cinemaxApp.feature.user.auth.view.capitalizeWords
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -91,23 +98,27 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                     colors = listOf(Color(0xFF1E1E2C), Color(0xFF23232F))
                 )
             )
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
+//            .padding(24.dp)
+            .padding(horizontal = 25.dp, vertical = 40.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "➕ Create New Movie",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
-                fontFamily = FontFamily.Serif,
-                color = Color.White
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp)
-        )
+//        Text(
+//            text = "➕ Create New Movie",
+//            style = MaterialTheme.typography.headlineMedium.copy(
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 26.sp,
+//                fontFamily = FontFamily.Serif,
+//                color = Color.White
+//            ),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 24.dp)
+//        )
+
+        CreateMovieTopBar( { nav.popBackStack() } )
+
+        Spacer(Modifier.height(24.dp))
 
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -118,16 +129,103 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("🎬 Movie Title") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = desc, onValueChange = { desc = it }, label = { Text("📝 Description") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = seats, onValueChange = { seats = it }, label = { Text("🪑 Total Seats") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = director, onValueChange = { director = it }, label = { Text("🎬 Director") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = rating, onValueChange = { rating = it }, label = { Text("⭐ Rating") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = genre, onValueChange = { genre = it }, label = { Text("🎭 Genre") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = posterUrl, onValueChange = { posterUrl = it }, label = { Text("🌐 Poster Image URL") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = {
+                        newValue ->
+                        title = capitalizeWords(newValue)
+                    },
+                    label = { Text("🎬 Movie Title") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = desc,
+                    onValueChange = {
+                        desc = it.replaceFirstChar { char ->
+                            if (char.isLowerCase()) char.titlecase() else char.toString()
+                        }
+                    },
+                    label = { Text("📝 Description") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = seats,
+                    onValueChange = { newText ->
+                        seats = newText.filter { it.isDigit() }
+                    },
+                    label = { Text("🪑 Total Seats") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = director,
+                    onValueChange = { newValue ->
+                        director = capitalizeWords(newValue)
+                    },
+                    label = { Text("🎬 Director") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = rating,
+                    onValueChange = { newValue ->
+                        if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                            rating = newValue
+                        }
+                    },
+                    label = { Text("⭐ Rating") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = genre,
+                    onValueChange = { newValue ->
+                        genre = newValue
+                            .split(Regex("(?<=,|\\s)")) // split after comma or space but keep the delimiter
+                            .joinToString("") { part ->
+                                if (part.isNotBlank()) {
+                                    // Trim leading spaces before capitalizing
+                                    val trimmed = part.trimStart()
+                                    val capitalized = trimmed.replaceFirstChar { it.uppercase() }
+                                    // Add back any leading spaces
+                                    part.take(part.length - trimmed.length) + capitalized
+                                } else part
+                            }
+//                        genre = it
+                    },
+                    label = { Text("🎭 Genre") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
+                OutlinedTextField(
+                    value = posterUrl,
+                    onValueChange = { posterUrl = it },
+                    label = { Text("🌐 Poster Image URL") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
+                )
 
                 if (posterUrl.isNotBlank()) {
                     Image(
@@ -198,6 +296,43 @@ fun CreateMovieScreen(nav: NavHostController, viewModel: MovieAdminViewModel) {
                     )
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+fun CreateMovieTopBar(onBackClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp)
+            .background(Color.Transparent),
+//            .background(Color(0xFF121212)), // optional background
+        contentAlignment = Alignment.TopStart
+    ) {
+        // Centered Title
+        Text(
+            text = "Create Movie",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.Center),
+            textAlign = TextAlign.Center
+        )
+
+        // Left-aligned Back Icon
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }
