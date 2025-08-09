@@ -76,4 +76,5 @@ dependencies {
     implementation("androidx.camera:camera-view:1.3.0")
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("org.json:json:20240303")
+    implementation("androidx.compose.material:material-icons-extended:1.7.7")
 }
