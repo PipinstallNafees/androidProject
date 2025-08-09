@@ -37,6 +37,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Preview
 @Composable
@@ -57,8 +60,18 @@ fun TicketDetailsScreen(nav: NavHostController, ticketJson: String) {
 
     val ticketId = ticket.getString("ticketId")
     val movieName = ticket.getString("movieName")
-    val date = ticket.getString("date")
-    val time = ticket.getString("time")
+
+    // Formatters for input
+    val inputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val inputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm") // 24-hour format
+
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+
+    // Parse the input
+    val date = LocalDate.parse(ticket.getString("date"), inputDateFormatter).format(dateFormatter)
+    val time = LocalTime.parse(ticket.getString("time"), inputTimeFormatter).format(timeFormatter)
+
 
     val seatArray = ticket.getJSONArray("seat")
     val seats = List(seatArray.length()) { i -> seatArray.getString(i) }

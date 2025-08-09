@@ -63,6 +63,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
@@ -219,6 +221,17 @@ fun TicketCard(
     orderId: String,
     barcodeBitmap: ImageBitmap // pass generated barcode or placeholder
 ) {
+    // Formatters for input
+    val inputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val inputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm") // 24-hour format
+
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
+
+    // Parse the input
+    val dateFormatted = LocalDate.parse(date, inputDateFormatter).format(dateFormatter)
+    val timeFormatted = LocalTime.parse(time, inputTimeFormatter).format(timeFormatter)
+
     Card(
         modifier = Modifier
             .padding(20.dp)
@@ -238,7 +251,7 @@ fun TicketCard(
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Date", color = Color.Gray, fontSize = 12.sp)
-                    Text(date, color = Color.White)
+                    Text(dateFormatted, color = Color.White)
                 }
                 Column {
                     Text("Seats", color = Color.Gray, fontSize = 12.sp)
@@ -255,7 +268,7 @@ fun TicketCard(
                 }
                 Column {
                     Text("Time", color = Color.Gray, fontSize = 12.sp)
-                    Text(time, color = Color.White)
+                    Text(timeFormatted, color = Color.White)
                 }
             }
 

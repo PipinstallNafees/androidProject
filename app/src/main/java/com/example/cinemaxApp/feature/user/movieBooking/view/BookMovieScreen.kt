@@ -5,7 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
@@ -56,6 +58,7 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
 
         if (movie != null) {
             viewModel.isBooked(movie.id)
+
 
             RemoteImageFromUrl(
                 url = movie.posterUrl,
@@ -133,7 +136,9 @@ fun BookMovieScreen(nav: NavHostController, viewModel: UserBookingViewModel) {
                 enabled = !viewModel.isBookedState,
                 colors = ButtonDefaults.buttonColors(
                     // Previous color --> Color(0xFF448AFF)
-                    containerColor = if (!viewModel.isBookedState) Color(0xFFCF6679) else Color(0xFF424242),
+                    containerColor = if (!viewModel.isBookedState) Color(0xFFCF6679) else Color(
+                        0xFF424242
+                    ),
                     contentColor = Color.White,
                     disabledContainerColor = Color(0xFF424242),
                     disabledContentColor = Color.White
@@ -190,7 +195,8 @@ fun RemoteImageFromUrl(
                 .build(),
             contentDescription = "Movie Poster",
             contentScale = contentScale,
-            modifier = modifier.fillMaxSize()
+            modifier = modifier
+                .fillMaxSize()
                 .aspectRatio(2f / 2.7f)
                 .clip(RoundedCornerShape(11.dp))
         )
